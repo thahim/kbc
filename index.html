@@ -1,197 +1,27 @@
 <!DOCTYPE html>
-<html lang="sd">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ڪير تهيندو ڪرورپاتي</title>
-  <meta property="og:title" content="ڪير تهيندو ڪرورپاتي" />
-  <meta property="og:image" content="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg" />
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-      color: #fff;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      max-width: 700px;
-      margin: 20px auto;
-      background-color: #1c1c1c;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px #000;
-      position: relative;
-    }
-    h1 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    #question {
-      font-size: 1.2em;
-      margin-bottom: 15px;
-    }
-    #options button {
-      display: block;
-      width: 100%;
-      margin: 8px 0;
-      padding: 10px;
-      font-size: 1em;
-      background-color: #333;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    #options button:hover {
-      background-color: #555;
-    }
-    #feedback, #score {
-      margin-top: 15px;
-      font-weight: bold;
-    }
-    #result-box, #popup {
-      text-align: center;
-      display: none;
-    }
-    #popup {
-      background-color: rgba(0, 0, 0, 0.8);
-      padding: 20px;
-      border-radius: 10px;
-      margin-top: 20px;
-    }
-    .developer-info {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      text-align: center;
-    }
-    .developer-photo {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      border: 2px solid #fff;
-    }
-    .developer-name {
-      display: block;
-      margin-top: 5px;
-      font-size: 0.9em;
-    }
-    #startBtn {
-      margin-top: 10px;
-      padding: 10px 20px;
-      font-size: 1.1em;
-      background-color: #007bff;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
-    }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="description" content="Kair Thindo Crorepati - A quiz game about Karachi">
+  <meta name="keywords" content="Sindhi, Karachi Quiz, KBC Game, Abdul Salam Thahim">
+  <meta name="author" content="Abdul Salam Thahim">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kair Thindo Crorepati?</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <div class="developer-info">
-      <img src="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg" class="developer-photo">
-      <span class="developer-name">Abdul Salam Thahim</span>
+  <div class="game-container">
+    <h1>Kair Thindo Crorepati?</h1>
+    <h3>Developed by Abdul Salam Thahim</h3>
+    <button id="startGameBtn">Start Game</button>
+
+    <div id="questionContainer" class="hidden">
+      <div id="question">Question will appear here</div>
+      <div id="answers"></div>
+      <button id="nextBtn">Next</button>
     </div>
-    <h1>ڪير تهيندو ڪرورپاتي</h1>
-    <p id="question">Press "Start Game" to begin</p>
-    <div id="options"></div>
-    <div id="feedback"></div>
-    <div id="score">Score: 0</div>
-    <button id="startBtn">Start Game</button>
-    <div id="popup"></div>
   </div>
 
-  <audio id="bg-music" src="https://example.com/crorepati-theme.mp3" loop></audio>
-  <audio id="start-sound" src="https://example.com/start-sound.mp3"></audio>
-  <audio id="correct-sound" src="https://example.com/correct.mp3"></audio>
-  <audio id="wrong-sound" src="https://example.com/wrong.mp3"></audio>
-
-  <script>
-    const questions = [
-      {
-        question: "What is the largest city of Pakistan?",
-        translation: "پاكستان جي ساني وښي شهر ڪهچو آهي؟",
-        options: ["Karachi", "Lahore", "Islamabad", "Quetta"],
-        answer: "Karachi"
-      },
-      // Add more questions here...
-    ];
-
-    let currentQuestion = 0;
-    let score = 0;
-
-    const questionEl = document.getElementById("question");
-    const optionsEl = document.getElementById("options");
-    const scoreEl = document.getElementById("score");
-    const popup = document.getElementById("popup");
-    const startBtn = document.getElementById("startBtn");
-    const bgMusic = document.getElementById("bg-music");
-    const startSound = document.getElementById("start-sound");
-    const correctSound = document.getElementById("correct-sound");
-    const wrongSound = document.getElementById("wrong-sound");
-
-    function startGame() {
-      score = 0;
-      currentQuestion = 0;
-      scoreEl.textContent = "Score: 0";
-      startBtn.style.display = "none";
-      popup.style.display = "none";
-      bgMusic.play();
-      startSound.play();
-      showQuestion();
-    }
-
-    function showQuestion() {
-      const q = questions[currentQuestion];
-      let options = [...q.options];
-      options.sort(() => Math.random() - 0.5);
-      questionEl.innerHTML = `<strong>Q${currentQuestion + 1}:</strong> ${q.question}<br><em>${q.translation}</em>`;
-      optionsEl.innerHTML = "";
-      options.forEach(opt => {
-        const btn = document.createElement("button");
-        btn.textContent = opt;
-        btn.onclick = () => selectAnswer(opt);
-        optionsEl.appendChild(btn);
-      });
-    }
-
-    function selectAnswer(selected) {
-      const correct = questions[currentQuestion].answer;
-      if (selected === correct) {
-        correctSound.play();
-        showPopup("Sahi Jawab!");
-        score++;
-        scoreEl.textContent = `Score: ${score}`;
-        currentQuestion++;
-        if (currentQuestion < questions.length) {
-          setTimeout(() => {
-            popup.style.display = "none";
-            showQuestion();
-          }, 800);
-        } else {
-          showPopup(`Game Over! Your score is ${score} out of ${questions.length}`);
-          startBtn.style.display = "block";
-        }
-      } else {
-        wrongSound.play();
-        questionEl.textContent = "";
-        optionsEl.innerHTML = "";
-        showPopup("Oh! غلط جواب<br><button onclick='startGame()'>Restart</button>");
-      }
-    }
-
-    function showPopup(message) {
-      popup.innerHTML = message;
-      popup.style.display = "block";
-    }
-
-    startBtn.addEventListener("click", startGame);
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
