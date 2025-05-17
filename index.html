@@ -1,124 +1,245 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Who Wants to Be a Millionaire – Karachi Edition</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-      color: #fff;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      max-width: 700px;
-      margin: 50px auto;
-      background-color: #1c1c1c;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px #000;
-      position: relative;
-    }
-    h1 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    #question {
-      font-size: 1.2em;
-      margin-bottom: 15px;
-    }
-    #options button {
-      display: block;
-      width: 100%;
-      margin: 8px 0;
-      padding: 10px;
-      font-size: 1em;
-      background-color: #333;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    #options button:hover {
-      background-color: #555;
-    }
-    #feedback {
-      margin-top: 15px;
-      font-weight: bold;
-    }
-    #score {
-      margin-top: 10px;
-    }
-    #result-box {
-      text-align: center;
-    }
-    .hidden {
-      display: none;
-    }
-    footer {
-      text-align: center;
-      margin-top: 20px;
-    }
-    .developer-info {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      text-align: center;
-    }
-    .developer-photo {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      border: 2px solid #fff;
-    }
-    .developer-name {
-      display: block;
-      margin-top: 5px;
-      font-size: 0.9em;
-      color: #fff;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kaun Banega Crorepati - Who Wants to Be a Millionaire?</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+    color: #fff;
+    margin: 0; padding: 0;
+    display: flex; justify-content: center; align-items: center; min-height: 100vh;
+  }
+  .container {
+    background: #1c1c1c;
+    padding: 30px 40px;
+    border-radius: 12px;
+    max-width: 700px;
+    box-shadow: 0 0 15px #000;
+    position: relative;
+  }
+  h1, h2 {
+    text-align: center;
+    margin: 0 0 10px 0;
+  }
+  h3 {
+    text-align: center;
+    margin-top: 0;
+    color: #aaa;
+  }
+  .developer-info {
+    text-align: center;
+    margin-bottom: 25px;
+  }
+  .developer-photo {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: 3px solid #03dac5;
+    object-fit: cover;
+    margin-bottom: 8px;
+  }
+  #question-number {
+    font-size: 1.1em;
+    margin-bottom: 15px;
+  }
+  #question-text {
+    font-size: 1.3em;
+    margin-bottom: 20px;
+  }
+  #options button {
+    width: 100%;
+    background: #333;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1.1em;
+    padding: 12px;
+    margin: 8px 0;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  #options button:hover {
+    background: #03dac5;
+  }
+  #popup {
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #222;
+    border: 2px solid #03dac5;
+    padding: 20px 40px;
+    font-size: 1.5em;
+    border-radius: 10px;
+    display: none;
+    z-index: 1000;
+  }
+  #restart-btn {
+    margin-top: 20px;
+    padding: 12px 30px;
+    font-size: 1.1em;
+    background: #d32f2f;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+  }
+  #restart-btn:hover {
+    background: #b71c1c;
+  }
+</style>
 </head>
 <body>
-  <div class="container">
-    <div class="developer-info">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/4/4b/Abdul_Salam_Thahim.jpg" alt="Abdul Salam Thahim" class="developer-photo">
-      <span class="developer-name">Abdul Salam Thahim</span>
-    </div>
-    <h1>Who Wants to Be a Millionaire – Karachi Edition</h1>
-    <div id="question-container">
-      <p id="question">Press "Start Game" to begin</p>
-      <div id="options"></div>
-      <div id="feedback"></div>
-      <div id="score">Score: 0</div>
-    </div>
-    <div id="result-box" class="hidden">
-      <h2 id="result-message"></h2>
-      <button onclick="startGame()">Start New Game</button>
-    </div>
+
+<div class="container">
+  <div class="developer-info">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/4/4b/Abdul_Salam_Thahim.jpg" alt="Abdul Salam Thahim" class="developer-photo" />
+    <div>Developed by Abdul Salam Thahim</div>
   </div>
-  <footer>
-    <button onclick="startGame()">Start Game</button>
-  </footer>
 
-  <audio id="background-music" loop>
-    <source src="background_music.mp3" type="audio/mp3">
-    Your browser does not support the audio element.
-  </audio>
+  <h1>Kaun Banega Crorepati</h1>
+  <h2>Who Wants to Be a Millionaire?</h2>
 
-  <audio id="correct-sound">
-    <source src="correct_answer.mp3" type="audio/mp3">
-    Your browser does not support the audio element.
-  </audio>
+  <div id="question-number"></div>
+  <div id="question-text">Press "Start Game" to begin</div>
+  <div id="options"></div>
 
-  <audio id="wrong-sound">
-    <source src="wrong_answer.mp3" type="audio/mp3">
-    Your browser does not support the audio element.
-  </audio>
+  <button id="start-btn" style="margin-top: 20px; font-size: 1.1em; padding: 12px 25px; cursor:pointer;">Start Game</button>
+</div>
 
-  <audio id="game-over-sound">
-    <source src="game_over.mp3" type="audio/mp3">
-    Your br
+<div id="popup"></div>
+
+<!-- Background music -->
+<audio id="bg-music" loop>
+  <source src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_f1fbd7204d.mp3?filename=ambient-calm-music-7123.mp3" type="audio/mpeg" />
+</audio>
+
+<!-- Sounds -->
+<audio id="correct-sound" src="https://www.soundjay.com/buttons/sounds/button-4.mp3"></audio>
+<audio id="wrong-sound" src="https://www.soundjay.com/buttons/sounds/button-10.mp3"></audio>
+
+<script>
+  const questionsPool = [
+    // 20 sample Pakistan/Karachi related questions for demo
+    {q:"Pakistan's national language?", options:["Urdu","Punjabi","Sindhi","Pashto"], answer:0},
+    {q:"Karachi is located in which province?", options:["Sindh","Punjab","Balochistan","Khyber Pakhtunkhwa"], answer:0},
+    {q:"Pakistan's independence year?", options:["1947","1950","1935","1945"], answer:0},
+    {q:"Karachi's famous beach?", options:["Clifton Beach","French Beach","Hawke's Bay","Sandspit Beach"], answer:0},
+    {q:"Pakistan's currency?", options:["Rupee","Dollar","Euro","Pound"], answer:0},
+    {q:"Karachi is capital of?", options:["Sindh","Punjab","Balochistan","Khyber Pakhtunkhwa"], answer:0},
+    {q:"Pakistan's founder?", options:["Quaid-e-Azam","Allama Iqbal","Liaquat Ali Khan","Benazir Bhutto"], answer:0},
+    {q:"Karachi’s airport code?", options:["KHI","LHE","ISB","PEW"], answer:0},
+    {q:"Pakistan's national sport?", options:["Hockey","Cricket","Football","Squash"], answer:0},
+    {q:"Largest city in Pakistan?", options:["Karachi","Lahore","Islamabad","Quetta"], answer:0},
+    {q:"Karachi’s famous food?", options:["Biryani","Pasta","Burger","Sushi"], answer:0},
+    {q:"Pakistan's flag colors?", options:["Green and White","Red and White","Blue and Yellow","Black and Orange"], answer:0},
+    {q:"Karachi’s nickname?", options:["City of Lights","City of Gardens","City of Sufis","City of Saints"], answer:0},
+    {q:"Famous Karachi landmark?", options:["Mazar-e-Quaid","Badshahi Mosque","Minar-e-Pakistan","Faisal Mosque"], answer:0},
+    {q:"Pakistan’s national flower?", options:["Jasmine","Rose","Sunflower","Lily"], answer:0},
+    {q:"Karachi’s main port?", options:["Port of Karachi","Gwadar Port","Port Qasim","Hambantota Port"], answer:0},
+    {q:"Largest airport in Pakistan?", options:["Jinnah Intl","Allama Iqbal Intl","Benazir Bhutto Intl","Sialkot Intl"], answer:0},
+    {q:"Pakistan’s national animal?", options:["Markhor","Tiger","Lion","Elephant"], answer:0},
+    {q:"Karachi’s tallest building?", options:["Habib Bank Plaza","Bahria Icon Tower","MCB Tower","Ocean Towers"], answer:1},
+    {q:"Karachi was founded in which century?", options:["18th","19th","17th","20th"], answer:0},
+  ];
+
+  let gameQuestions = [];
+  let currentQ = 0;
+  let score = 0;
+
+  const questionNumberDiv = document.getElementById('question-number');
+  const questionTextDiv = document.getElementById('question-text');
+  const optionsDiv = document.getElementById('options');
+  const startBtn = document.getElementById('start-btn');
+  const popup = document.getElementById('popup');
+  const bgMusic = document.getElementById('bg-music');
+  const correctSound = document.getElementById('correct-sound');
+  const wrongSound = document.getElementById('wrong-sound');
+
+  function shuffleArray(arr) {
+    for(let i=arr.length-1; i>0; i--) {
+      const j = Math.floor(Math.random()*(i+1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function startGame() {
+    score = 0;
+    currentQ = 0;
+    // Pick 15 random questions from pool
+    gameQuestions = shuffleArray(questionsPool).slice(0, 15);
+    startBtn.style.display = 'none';
+    showQuestion();
+    bgMusic.play();
+  }
+
+  function showQuestion() {
+    if(currentQ >= gameQuestions.length) {
+      // Game finished
+      showPopup(`Game Over! Your score is ${score}/${gameQuestions.length}`, false, true);
+      return;
+    }
+    const q = gameQuestions[currentQ];
+    questionNumberDiv.textContent = `Question ${currentQ + 1} of ${gameQuestions.length}`;
+    questionTextDiv.textContent = q.q;
+    optionsDiv.innerHTML = '';
+    q.options.forEach((option, idx) => {
+      const btn = document.createElement('button');
+      btn.textContent = option;
+      btn.onclick = () => selectAnswer(idx);
+      optionsDiv.appendChild(btn);
+    });
+  }
+
+  function selectAnswer(selected) {
+    const correct = gameQuestions[currentQ].answer;
+    if(selected === correct) {
+      correctSound.play();
+      showPopup("Sahi Jawab!", true, false);
+      score++;
+      setTimeout(() => {
+        hidePopup();
+        currentQ++;
+        showQuestion();
+      }, 500);
+    } else {
+      wrongSound.play();
+      showPopup("Oh! Ghalat Jawab", false, true);
+    }
+  }
+
+  function showPopup(message, isCorrect, showRestart) {
+    popup.textContent = message;
+    popup.style.display = 'block';
+    if(showRestart) {
+      const restartBtn = document.createElement('button');
+      restartBtn.id = 'restart-btn';
+      restartBtn.textContent = "Restart Game";
+      restartBtn.onclick = () => {
+        hidePopup();
+        startBtn.style.display = 'inline-block';
+        questionNumberDiv.textContent = '';
+        questionTextDiv.textContent = 'Press "Start Game" to begin';
+        optionsDiv.innerHTML = '';
+        bgMusic.pause();
+        bgMusic.currentTime = 0;
+      };
+      popup.appendChild(document.createElement('br'));
+      popup.appendChild(restartBtn);
+    }
+  }
+
+  function hidePopup() {
+    popup.style.display = 'none';
+    popup.textContent = '';
+  }
+
+  startBtn.addEventListener('click', startGame);
+</script>
+
+</body>
+</html>
