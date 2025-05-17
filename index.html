@@ -1,283 +1,197 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sd">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>ڪير ٿيندو ڪرورپاتي</title>
-
-<meta property="og:title" content="ڪير ٿيندو ڪرورپاتي" />
-<meta property="og:image" content="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg" />
-<meta property="og:type" content="website" />
-<meta name="description" content="Who Wants to Be a Millionaire Game with questions about Pakistan and Karachi. Developed by Abdul Salam Thahim." />
-
-<style>
-  body {
-    background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-    font-family: Arial, sans-serif;
-    color: #fff;
-    margin: 0; padding: 0;
-    display: flex; flex-direction: column; align-items: center;
-    min-height: 100vh;
-  }
-  header {
-    text-align: center;
-    padding: 20px 10px 10px;
-  }
-  header h1 {
-    font-size: 2.5rem;
-    margin: 0;
-    direction: rtl;
-    font-weight: bold;
-  }
-  .developer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
-    margin-bottom: 25px;
-  }
-  .developer img {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    border: 3px solid #fff;
-    object-fit: cover;
-  }
-  .developer span {
-    font-size: 1rem;
-    color: #ddd;
-  }
-  .container {
-    background: #1c1c1ccc;
-    border-radius: 10px;
-    padding: 25px 20px 30px;
-    max-width: 650px;
-    width: 90%;
-    box-shadow: 0 0 15px #111;
-  }
-  #question-number {
-    font-size: 1.1rem;
-    margin-bottom: 10px;
-    color: #a9d6ff;
-  }
-  #question {
-    font-size: 1.4rem;
-    font-weight: 600;
-    margin-bottom: 6px;
-  }
-  #question-sindhi {
-    font-size: 1.1rem;
-    font-style: italic;
-    margin-bottom: 20px;
-    color: #b0e0ffcc;
-  }
-  #options {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  #options button {
-    background: #33475b;
-    border: none;
-    border-radius: 7px;
-    color: #fff;
-    padding: 12px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background 0.3s ease;
-    direction: ltr;
-  }
-  #options button:hover {
-    background: #5578a7;
-  }
-  #popup {
-    position: fixed;
-    top: 20%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #222d3add;
-    color: #fff;
-    font-size: 1.5rem;
-    font-weight: 700;
-    padding: 20px 30px;
-    border-radius: 10px;
-    box-shadow: 0 0 12px #5578a7;
-    display: none;
-    z-index: 9999;
-    text-align: center;
-  }
-  #popup button {
-    margin-top: 15px;
-    padding: 10px 25px;
-    background: #5578a7;
-    border: none;
-    border-radius: 7px;
-    font-size: 1rem;
-    color: #fff;
-    cursor: pointer;
-  }
-  footer {
-    margin-top: auto;
-    padding: 15px;
-    color: #ccc;
-    font-size: 0.9rem;
-    text-align: center;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ڪير تهيندو ڪرورپاتي</title>
+  <meta property="og:title" content="ڪير تهيندو ڪرورپاتي" />
+  <meta property="og:image" content="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 700px;
+      margin: 20px auto;
+      background-color: #1c1c1c;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #000;
+      position: relative;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    #question {
+      font-size: 1.2em;
+      margin-bottom: 15px;
+    }
+    #options button {
+      display: block;
+      width: 100%;
+      margin: 8px 0;
+      padding: 10px;
+      font-size: 1em;
+      background-color: #333;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    #options button:hover {
+      background-color: #555;
+    }
+    #feedback, #score {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    #result-box, #popup {
+      text-align: center;
+      display: none;
+    }
+    #popup {
+      background-color: rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+    .developer-info {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      text-align: center;
+    }
+    .developer-photo {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+    }
+    .developer-name {
+      display: block;
+      margin-top: 5px;
+      font-size: 0.9em;
+    }
+    #startBtn {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 1.1em;
+      background-color: #007bff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  </style>
 </head>
 <body>
-
-<header>
-  <h1>ڪير ٿيندو ڪرورپاتي</h1>
-  <div class="developer">
-    <img src="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg" alt="عبدالسلام طهيم" />
-    <span>Developed by Abdul Salam Thahim</span>
+  <div class="container">
+    <div class="developer-info">
+      <img src="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg" class="developer-photo">
+      <span class="developer-name">Abdul Salam Thahim</span>
+    </div>
+    <h1>ڪير تهيندو ڪرورپاتي</h1>
+    <p id="question">Press "Start Game" to begin</p>
+    <div id="options"></div>
+    <div id="feedback"></div>
+    <div id="score">Score: 0</div>
+    <button id="startBtn">Start Game</button>
+    <div id="popup"></div>
   </div>
-</header>
 
-<div class="container">
-  <div id="question-number">Question 1 / 15</div>
-  <div id="question">Press "Start Game" to begin</div>
-  <div id="question-sindhi"></div>
-  <div id="options"></div>
-</div>
+  <audio id="bg-music" src="https://example.com/crorepati-theme.mp3" loop></audio>
+  <audio id="start-sound" src="https://example.com/start-sound.mp3"></audio>
+  <audio id="correct-sound" src="https://example.com/correct.mp3"></audio>
+  <audio id="wrong-sound" src="https://example.com/wrong.mp3"></audio>
 
-<div id="popup"></div>
+  <script>
+    const questions = [
+      {
+        question: "What is the largest city of Pakistan?",
+        translation: "پاكستان جي ساني وښي شهر ڪهچو آهي؟",
+        options: ["Karachi", "Lahore", "Islamabad", "Quetta"],
+        answer: "Karachi"
+      },
+      // Add more questions here...
+    ];
 
-<footer>
-  <button id="start-btn">Start Game</button>
-</footer>
+    let currentQuestion = 0;
+    let score = 0;
 
-<audio id="bg-music" loop src="https://actions.google.com/sounds/v1/ambiences/office_background.ogg"></audio>
-<audio id="correct-sound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
-<audio id="wrong-sound" src="https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg"></audio>
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const scoreEl = document.getElementById("score");
+    const popup = document.getElementById("popup");
+    const startBtn = document.getElementById("startBtn");
+    const bgMusic = document.getElementById("bg-music");
+    const startSound = document.getElementById("start-sound");
+    const correctSound = document.getElementById("correct-sound");
+    const wrongSound = document.getElementById("wrong-sound");
 
-<script>
-  const questions = [
-    {
-      question: "What is the capital city of Pakistan?",
-      sindhi: "پاڪستان جو گاديءَ جو شهر ڪهڙو آهي؟",
-      options: ["Islamabad", "Karachi", "Lahore", "Peshawar"],
-      correct: "Islamabad"
-    },
-    {
-      question: "Which city is known as the financial hub of Pakistan?",
-      sindhi: "پاڪستان جو مالي مرڪز ڪهڙو شهر آهي؟",
-      options: ["Karachi", "Islamabad", "Quetta", "Multan"],
-      correct: "Karachi"
-    },
-    {
-      question: "Which sea borders Karachi?",
-      sindhi: "ڪراچي جي ڪناري تي ڪهڙو سمنڊ آهي؟",
-      options: ["Arabian Sea", "Red Sea", "Caspian Sea", "Black Sea"],
-      correct: "Arabian Sea"
-    },
-    {
-      question: "What is the national language of Pakistan?",
-      sindhi: "پاڪستان جي قومي ٻولي ڪهڙي آهي؟",
-      options: ["Urdu", "Sindhi", "Punjabi", "Pashto"],
-      correct: "Urdu"
-    },
-    {
-      question: "Which is Pakistan's largest city by population?",
-      sindhi: "آباديءَ جي لحاظ سان پاڪستان جو سڀ کان وڏو شهر ڪهڙو آهي؟",
-      options: ["Karachi", "Lahore", "Islamabad", "Faisalabad"],
-      correct: "Karachi"
-    },
-    // Add more questions as needed, total 15 or more
-  ];
-
-  let currentQuestionIndex = 0;
-  let score = 0;
-
-  const questionNumberElem = document.getElementById("question-number");
-  const questionElem = document.getElementById("question");
-  const questionSindhiElem = document.getElementById("question-sindhi");
-  const optionsElem = document.getElementById("options");
-  const popup = document.getElementById("popup");
-  const startBtn = document.getElementById("start-btn");
-  const bgMusic = document.getElementById("bg-music");
-  const correctSound = document.getElementById("correct-sound");
-  const wrongSound = document.getElementById("wrong-sound");
-
-  function shuffle(array) {
-    return array.sort(() => Math.random() - 0.5);
-  }
-
-  function startGame() {
-    currentQuestionIndex = 0;
-    score = 0;
-    startBtn.disabled = true;
-    bgMusic.play();
-    showQuestion();
-  }
-
-  function showQuestion() {
-    if(currentQuestionIndex >= questions.length) {
-      endGame();
-      return;
+    function startGame() {
+      score = 0;
+      currentQuestion = 0;
+      scoreEl.textContent = "Score: 0";
+      startBtn.style.display = "none";
+      popup.style.display = "none";
+      bgMusic.play();
+      startSound.play();
+      showQuestion();
     }
-    const q = questions[currentQuestionIndex];
-    questionNumberElem.textContent = `Question ${currentQuestionIndex + 1} / ${questions.length}`;
-    questionElem.textContent = q.question;
-    questionSindhiElem.textContent = q.sindhi;
 
-    // Randomize options order
-    let shuffledOptions = shuffle([...q.options]);
-
-    optionsElem.innerHTML = "";
-    shuffledOptions.forEach(option => {
-      const btn = document.createElement("button");
-      btn.textContent = option;
-      btn.onclick = () => checkAnswer(option, q.correct);
-      optionsElem.appendChild(btn);
-    });
-  }
-
-  function checkAnswer(selected, correct) {
-    if(selected === correct) {
-      correctSound.play();
-      showPopup("Correct Answer!", false);
-      score++;
-      currentQuestionIndex++;
-      setTimeout(() => {
-        hidePopup();
-        showQuestion();
-      }, 700);
-    } else {
-      wrongSound.play();
-      showPopup("Oh! Wrong Answer", true);
+    function showQuestion() {
+      const q = questions[currentQuestion];
+      let options = [...q.options];
+      options.sort(() => Math.random() - 0.5);
+      questionEl.innerHTML = `<strong>Q${currentQuestion + 1}:</strong> ${q.question}<br><em>${q.translation}</em>`;
+      optionsEl.innerHTML = "";
+      options.forEach(opt => {
+        const btn = document.createElement("button");
+        btn.textContent = opt;
+        btn.onclick = () => selectAnswer(opt);
+        optionsEl.appendChild(btn);
+      });
     }
-  }
 
-  function showPopup(message, showRestart) {
-    popup.textContent = message;
-    if(showRestart) {
-      const restartBtn = document.createElement("button");
-      restartBtn.textContent = "Restart Game";
-      restartBtn.onclick = () => {
-        hidePopup();
-        startGame();
-      };
-      popup.appendChild(document.createElement("br"));
-      popup.appendChild(restartBtn);
+    function selectAnswer(selected) {
+      const correct = questions[currentQuestion].answer;
+      if (selected === correct) {
+        correctSound.play();
+        showPopup("Sahi Jawab!");
+        score++;
+        scoreEl.textContent = `Score: ${score}`;
+        currentQuestion++;
+        if (currentQuestion < questions.length) {
+          setTimeout(() => {
+            popup.style.display = "none";
+            showQuestion();
+          }, 800);
+        } else {
+          showPopup(`Game Over! Your score is ${score} out of ${questions.length}`);
+          startBtn.style.display = "block";
+        }
+      } else {
+        wrongSound.play();
+        questionEl.textContent = "";
+        optionsEl.innerHTML = "";
+        showPopup("Oh! غلط جواب<br><button onclick='startGame()'>Restart</button>");
+      }
     }
-    popup.style.display = "block";
-  }
 
-  function hidePopup() {
-    popup.style.display = "none";
-    popup.innerHTML = "";
-  }
+    function showPopup(message) {
+      popup.innerHTML = message;
+      popup.style.display = "block";
+    }
 
-  function endGame() {
-    bgMusic.pause();
-    showPopup(`Game Over! Your score is ${score} out of ${questions.length}`, true);
-    startBtn.disabled = false;
-  }
-
-  startBtn.addEventListener("click", startGame);
-</script>
-
+    startBtn.addEventListener("click", startGame);
+  </script>
 </body>
 </html>
