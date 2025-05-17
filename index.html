@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kaun Banega Crorepati – Karachi Edition</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 700px;
+      margin: 50px auto;
+      background-color: #1c1c1c;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #000;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    #question {
+      font-size: 1.2em;
+      margin-bottom: 15px;
+    }
+    #options button {
+      display: block;
+      width: 100%;
+      margin: 8px 0;
+      padding: 10px;
+      font-size: 1em;
+      background-color: #333;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    #options button:hover {
+      background-color: #555;
+    }
+    #feedback {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    #score {
+      margin-top: 10px;
+    }
+    #next-btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1em;
+      background-color: #0066cc;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #result-box {
+      text-align: center;
+    }
+    .hidden {
+      display: none;
+    }
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 0.9em;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Kaun Banega Crorepati – Karachi Edition</h1>
+    <div id="quiz-box">
+      <p id="question">Question will appear here</p>
+      <div id="options"></div>
+      <p id="feedback"></p>
+      <p id="score">Score: 0</p>
+      <button id="next-btn" class="hidden">Next Question</button>
+    </div>
+    <div id="result-box" class="hidden">
+      <h2>Quiz Completed!</h2>
+      <p id="final-score"></p>
+      <button onclick="startQuiz()">Play Again</button>
+    </div>
+  </div>
+  <footer>
+    Developed by Abdul Salam Thahim
+  </footer>
+  <script>
+    const questions = [
+      {
+        question: "Karachi ka sabse bara market kaunsa hai?",
+        options: ["Tariq Road", "Zainab Market", "Saddar", "Empress Market"],
+        answer: "Empress Market"
+      },
+      {
+        question: "Pakistan ka national sport kya hai?",
+        options: ["Cricket", "Hockey", "Squash", "Football"],
+        answer: "Hockey"
+      },
+      {
+        question: "Quaid-e-Azam ka maqbara kis sheher mein hai?",
+        options: ["Lahore", "Islamabad", "Karachi", "Peshawar"],
+        answer: "Karachi"
+      },
+      {
+        question: "Karachi ka mashhoor beach kaunsa hai?",
+        options: ["Clifton", "Hawke's Bay", "Sandspit", "Manora"],
+        answer: "Clifton"
+      },
+      {
+        question: "Pakistan ka currency unit kya hai?",
+        options: ["Rupee", "Dollar", "Taka", "Dinar"],
+        answer: "Rupee"
+      },
+      {
+        question: "Karachi mein sabse mashhoor university kaunsi hai?",
+        options: ["Punjab University", "Karachi University", "LUMS", "NUST"],
+        answer: "Karachi University"
+      },
+      {
+        question: "Pakistan ka sabse lamba river kaunsa hai?",
+        options: ["Chenab", "Jhelum", "Indus", "Ravi"],
+        answer: "Indus"
+      },
+      {
+        question: "Karachi ka mashhoor mausam kaunsa hai?",
+        options: ["Sardiyan", "Garmiyan", "Barsaat", "Har mausam"],
+        answer: "Garmiyan"
+      },
+      {
+        question: "Pakistan ka national flower kya hai?",
+        options: ["Rose", "Jasmine", "Sunflower", "Lily"],
+        answer: "Jasmine"
+      },
+      {
+        question: "Karachi ka sabse purana area kaunsa hai?",
+        options: ["Defence", "Clifton", "Saddar", "Gulshan"],
+        answer: "Saddar"
+      },
+      {
+        question: "Pakistan ka national language kya hai?",
+        options: ["Punjabi", "Sindhi", "Urdu", "English"],
+        answer: "Urdu"
+      },
+      {
+        question: "Karachi ka mashhoor food item kaunsa hai?",
+        options: ["Biryani", "Pizza", "Burger", "Pasta"],
+        answer: "Biryani"
+      },
+      {
+        question: "Pakistan ka independence day kab hai?",
+        options: ["14 August", "15 August", "23 March", "25 December"],
+        answer: "14 August"
+      },
+      {
+        question: "Karachi ka sabse mashhoor park kaunsa hai?",
+        options: ["Hill Park", "Safari Park", "Bagh-e-Jinnah", "Aladdin Park"],
+        answer: "Bagh-e-Jinnah"
+      },
+      {
+        question: "Pakistan ka national animal kya hai?",
+        options: ["Lion", "Markhor", "Tiger", "Elephant"],
+        answer: "Markhor"
+      }
+    ];
+
+    let selectedQuestions = [];
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function getRandomQuestions(array, num) {
+      const shuffled = array.sort(() => 0.5 - Math.random());
+      return shuffled.slice(0, num);
+    }
+
+    function startQuiz() {
+      selectedQuestions = getRandomQuestions(questions, 15);
+      currentQuestionIndex = 0;
+      score = 0;
+      document.getElementById('quiz-box').classList.remove('hidden');
+      document.getElementById('result-box').classList.add('hidden');
+      document.getElementById('next-btn').classList.add('hidden');
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const questionObj = selectedQuestions[currentQuestionIndex];
+      document.getElementById('question').textContent = questionObj.question;
+      const optionsDiv = document.getElementById('options');
+      optionsDiv.innerHTML = '';
+      questionObj.options.forEach(option => {
+        const btn = document.createElement('button');
+        btn.textContent = option;
+        btn.onclick = () => checkAnswer(option);
+        optionsDiv.appendChild(btn);
+      });
+      document.getElementById('feedback').textContent = '';
+      document.getElementById('score').textContent = `Score: ${score}`;
+    }
+
+    function checkAnswer(selectedOption) {
+      const questionObj = selectedQuestions[currentQuestionIndex];
+      if (selectedOption === questionObj.answer) {
+        score += 10;
+        document.getElementById('feedback').textContent = 'Correct!';
+      } else {
+        document.getElementById('feedback').textContent = `Incorrect! The correct answer was: ${questionObj.answer}`;
+      }
+      document.getElementById('score').textContent = `Score: ${score}`;
+      document.getElementById('next-btn').classList.remove('hidden');
+      // Disable all option buttons after selection
+      const buttons = document.querySelectorAll('#options button');
+      buttons.forEach(btn => btn.disabled = true);
+    }
+
+    document.getElementById('next-btn').addEventListener('click', () => {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < selectedQuestions.length) {
+        showQuestion();
+        document.getElementById('next-btn').classList.add('hidden');
+      } else {
+        endQuiz();
+      }
+    });
+
+    function endQuiz() {
+      document.getElementById('quiz-box').classList.add('hidden');
+      document.getElementById('result-box').classList.remove('hidden');
+      document.getElementById('final-score').textContent = `Your final score is: ${score} out of ${selectedQuestions.length * 10}`;
+    }
+
+    // Start the quiz when the page loads
+    window.onload = startQuiz;
+  </script>
+</body>
+</html>
