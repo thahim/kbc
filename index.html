@@ -3,69 +3,42 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="description" content="Who wants to be a millionaire? Developed by Abdul Salam Thahim" />
-<meta property="og:title" content="Who wants to be a millionaire?" />
-<meta property="og:description" content="Developed by Abdul Salam Thahim" />
-<meta property="og:image" content="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg" />
 <title>Who Wants to Be a Millionaire</title>
 <style>
   body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #0b1c2c;
-    color: white;
+    margin: 0; background-color: #0b1c2c; color: white; font-family: Arial, sans-serif;
     text-align: center;
   }
   header, footer {
-    padding: 10px;
-    background-color: #111;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+    background: #111; padding: 10px; display: flex; flex-direction: column;
+    align-items: center; gap: 5px;
   }
   header img, footer img {
-    border-radius: 50%;
-    width: 80px;
-    height: 80px;
+    width: 80px; height: 80px; border-radius: 50%;
   }
   #home-screen {
     padding: 50px;
   }
   .home-photo {
-    width: 150px;
-    border-radius: 50%;
-    border: 5px solid orange;
+    width: 150px; border-radius: 50%; border: 5px solid orange;
   }
   .home-name {
-    font-size: 24px;
-    margin: 10px 0;
+    font-size: 24px; margin: 10px 0;
   }
   button {
-    padding: 10px 20px;
-    font-size: 18px;
-    background-color: orange;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    color: black;
+    padding: 10px 20px; font-size: 18px;
+    background-color: orange; border: none; border-radius: 10px; cursor: pointer; color: black;
   }
   #question-screen {
-    display: none;
-    padding: 20px;
+    display: none; padding: 20px;
   }
   .question-box {
-    background: black;
-    border: 4px solid orange;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
+    background: black; border: 4px solid orange;
+    padding: 20px; border-radius: 10px; margin-bottom: 20px;
   }
   #answers {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 10px;
-    justify-items: center;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px; justify-items: center;
   }
   @media (max-width: 600px) {
     #answers {
@@ -73,25 +46,16 @@
     }
   }
   .answer-box {
-    border: 3px solid orange;
-    padding: 10px;
-    border-radius: 10px;
-    background-color: #1f2e3a;
-    cursor: pointer;
-    width: 100%;
-    max-width: 200px;
+    border: 3px solid orange; padding: 10px;
+    border-radius: 10px; background: #1f2e3a;
+    cursor: pointer; max-width: 200px; width: 100%;
   }
   .answer-box:hover {
-    background-color: #ffa500;
-    color: black;
+    background-color: #ffa500; color: black;
   }
   #progress {
-    width: 10px;
-    position: fixed;
-    right: 0;
-    bottom: 0;
-    background-color: orange;
-    transition: height 0.5s;
+    width: 10px; position: fixed; right: 0; bottom: 0;
+    background-color: orange; transition: height 0.5s ease;
     height: 0;
   }
 </style>
@@ -106,7 +70,7 @@
   <div id="home-screen">
     <img src="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg" class="home-photo" alt="Developer Photo" />
     <h2 class="home-name">Developed by Abdul Salam Thahim</h2>
-    <button onclick="startGame()">Start Game</button>
+    <button id="start-btn">Start Game</button>
   </div>
 
   <div id="question-screen">
@@ -139,8 +103,7 @@
   let current = 0;
 
   function shuffleArray(arr) {
-    // Fisher-Yates shuffle
-    for (let i = arr.length - 1; i > 0; i--) {
+    for (let i = arr.length -1; i > 0; i--) {
       let j = Math.floor(Math.random() * (i + 1));
       [arr[i], arr[j]] = [arr[j], arr[i]];
     }
@@ -163,18 +126,18 @@
       location.reload();
       return;
     }
-
     const q = questions[current];
-    document.getElementById('question').innerHTML = `<h2>Q${current + 1}: ${q.question}</h2><p><em>${q.translation}</em></p>`;
+    const questionEl = document.getElementById('question');
+    questionEl.innerHTML = `<h2>Q${current + 1}: ${q.question}</h2><p><em>${q.translation}</em></p>`;
 
-    const answers = document.getElementById('answers');
-    answers.innerHTML = '';
+    const answersEl = document.getElementById('answers');
+    answersEl.innerHTML = '';
     q.answers.forEach(ans => {
       const div = document.createElement('div');
       div.className = 'answer-box';
       div.textContent = ans;
       div.onclick = () => checkAnswer(ans, q.correct);
-      answers.appendChild(div);
+      answersEl.appendChild(div);
     });
 
     speakText(`${q.question}. Options are: ${q.answers.map(a => a.split(' / ')[0]).join(', ')}.`);
@@ -194,25 +157,35 @@
           alert("Wrong answer! Restarting game.");
           speechSynthesis.cancel();
           location.reload();
-        }, 1200);
+        }, 1000);
       });
     }
   }
 
   function updateProgress() {
+    // Progress bar height grows from bottom to top
     const percent = ((current) / questions.length) * 100;
     document.getElementById('progress').style.height = percent + "vh";
   }
 
   function speakText(text, onEndCallback) {
-    if (!window.speechSynthesis) return;
+    if (!window.speechSynthesis) {
+      if(onEndCallback) onEndCallback();
+      return;
+    }
     speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
-    // Use English voice (modify if you want Urdu voice available on your system)
-    utterance.lang = 'en-US';
+    utterance.lang = 'en-US'; // English voice
     utterance.onend = onEndCallback || null;
     speechSynthesis.speak(utterance);
   }
+
+  document.getElementById('start-btn').addEventListener('click', startGame);
+
+  // Cancel TTS if user leaves page or refreshes
+  window.addEventListener('beforeunload', () => {
+    speechSynthesis.cancel();
+  });
 </script>
 </body>
 </html>
