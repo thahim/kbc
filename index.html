@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="sd">
+<html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -8,25 +8,26 @@
 <meta property="og:title" content="ڪير ٿيندو ڪرورپاتي" />
 <meta property="og:image" content="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg" />
 <meta property="og:type" content="website" />
-<meta name="description" content="Who Wants to Be a Millionaire Game in Sindhi about Pakistan and Karachi. Developed by Abdul Salam Thahim." />
+<meta name="description" content="Who Wants to Be a Millionaire Game with questions about Pakistan and Karachi. Developed by Abdul Salam Thahim." />
 
 <style>
   body {
     background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: Arial, sans-serif;
     color: #fff;
     margin: 0; padding: 0;
     display: flex; flex-direction: column; align-items: center;
     min-height: 100vh;
-    direction: rtl; /* Sindhi is written right to left */
   }
   header {
     text-align: center;
     padding: 20px 10px 10px;
   }
   header h1 {
-    font-size: 2.2rem;
+    font-size: 2.5rem;
     margin: 0;
+    direction: rtl;
+    font-weight: bold;
   }
   .developer {
     display: flex;
@@ -53,7 +54,6 @@
     max-width: 650px;
     width: 90%;
     box-shadow: 0 0 15px #111;
-    direction: rtl;
   }
   #question-number {
     font-size: 1.1rem;
@@ -61,7 +61,7 @@
     color: #a9d6ff;
   }
   #question {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     font-weight: 600;
     margin-bottom: 6px;
   }
@@ -85,7 +85,7 @@
     font-size: 1rem;
     cursor: pointer;
     transition: background 0.3s ease;
-    direction: ltr; /* button text LTR for clarity */
+    direction: ltr;
   }
   #options button:hover {
     background: #5578a7;
@@ -131,13 +131,13 @@
   <h1>ڪير ٿيندو ڪرورپاتي</h1>
   <div class="developer">
     <img src="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg" alt="عبدالسلام طهيم" />
-    <span>عبدالسلام طهيم پاران تيار ٿيل</span>
+    <span>Developed by Abdul Salam Thahim</span>
   </div>
 </header>
 
 <div class="container">
-  <div id="question-number">سوال 1 / 15</div>
-  <div id="question">گيم شروع ڪرڻ لاءِ "شروع ڪريو" تي ڪلڪ ڪريو</div>
+  <div id="question-number">Question 1 / 15</div>
+  <div id="question">Press "Start Game" to begin</div>
   <div id="question-sindhi"></div>
   <div id="options"></div>
 </div>
@@ -145,11 +145,138 @@
 <div id="popup"></div>
 
 <footer>
-  <button id="start-btn">شروع ڪريو</button>
+  <button id="start-btn">Start Game</button>
 </footer>
 
+<audio id="bg-music" loop src="https://actions.google.com/sounds/v1/ambiences/office_background.ogg"></audio>
+<audio id="correct-sound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
+<audio id="wrong-sound" src="https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg"></audio>
+
 <script>
-  // Game logic will go here
+  const questions = [
+    {
+      question: "What is the capital city of Pakistan?",
+      sindhi: "پاڪستان جو گاديءَ جو شهر ڪهڙو آهي؟",
+      options: ["Islamabad", "Karachi", "Lahore", "Peshawar"],
+      correct: "Islamabad"
+    },
+    {
+      question: "Which city is known as the financial hub of Pakistan?",
+      sindhi: "پاڪستان جو مالي مرڪز ڪهڙو شهر آهي؟",
+      options: ["Karachi", "Islamabad", "Quetta", "Multan"],
+      correct: "Karachi"
+    },
+    {
+      question: "Which sea borders Karachi?",
+      sindhi: "ڪراچي جي ڪناري تي ڪهڙو سمنڊ آهي؟",
+      options: ["Arabian Sea", "Red Sea", "Caspian Sea", "Black Sea"],
+      correct: "Arabian Sea"
+    },
+    {
+      question: "What is the national language of Pakistan?",
+      sindhi: "پاڪستان جي قومي ٻولي ڪهڙي آهي؟",
+      options: ["Urdu", "Sindhi", "Punjabi", "Pashto"],
+      correct: "Urdu"
+    },
+    {
+      question: "Which is Pakistan's largest city by population?",
+      sindhi: "آباديءَ جي لحاظ سان پاڪستان جو سڀ کان وڏو شهر ڪهڙو آهي؟",
+      options: ["Karachi", "Lahore", "Islamabad", "Faisalabad"],
+      correct: "Karachi"
+    },
+    // Add more questions as needed, total 15 or more
+  ];
+
+  let currentQuestionIndex = 0;
+  let score = 0;
+
+  const questionNumberElem = document.getElementById("question-number");
+  const questionElem = document.getElementById("question");
+  const questionSindhiElem = document.getElementById("question-sindhi");
+  const optionsElem = document.getElementById("options");
+  const popup = document.getElementById("popup");
+  const startBtn = document.getElementById("start-btn");
+  const bgMusic = document.getElementById("bg-music");
+  const correctSound = document.getElementById("correct-sound");
+  const wrongSound = document.getElementById("wrong-sound");
+
+  function shuffle(array) {
+    return array.sort(() => Math.random() - 0.5);
+  }
+
+  function startGame() {
+    currentQuestionIndex = 0;
+    score = 0;
+    startBtn.disabled = true;
+    bgMusic.play();
+    showQuestion();
+  }
+
+  function showQuestion() {
+    if(currentQuestionIndex >= questions.length) {
+      endGame();
+      return;
+    }
+    const q = questions[currentQuestionIndex];
+    questionNumberElem.textContent = `Question ${currentQuestionIndex + 1} / ${questions.length}`;
+    questionElem.textContent = q.question;
+    questionSindhiElem.textContent = q.sindhi;
+
+    // Randomize options order
+    let shuffledOptions = shuffle([...q.options]);
+
+    optionsElem.innerHTML = "";
+    shuffledOptions.forEach(option => {
+      const btn = document.createElement("button");
+      btn.textContent = option;
+      btn.onclick = () => checkAnswer(option, q.correct);
+      optionsElem.appendChild(btn);
+    });
+  }
+
+  function checkAnswer(selected, correct) {
+    if(selected === correct) {
+      correctSound.play();
+      showPopup("Correct Answer!", false);
+      score++;
+      currentQuestionIndex++;
+      setTimeout(() => {
+        hidePopup();
+        showQuestion();
+      }, 700);
+    } else {
+      wrongSound.play();
+      showPopup("Oh! Wrong Answer", true);
+    }
+  }
+
+  function showPopup(message, showRestart) {
+    popup.textContent = message;
+    if(showRestart) {
+      const restartBtn = document.createElement("button");
+      restartBtn.textContent = "Restart Game";
+      restartBtn.onclick = () => {
+        hidePopup();
+        startGame();
+      };
+      popup.appendChild(document.createElement("br"));
+      popup.appendChild(restartBtn);
+    }
+    popup.style.display = "block";
+  }
+
+  function hidePopup() {
+    popup.style.display = "none";
+    popup.innerHTML = "";
+  }
+
+  function endGame() {
+    bgMusic.pause();
+    showPopup(`Game Over! Your score is ${score} out of ${questions.length}`, true);
+    startBtn.disabled = false;
+  }
+
+  startBtn.addEventListener("click", startGame);
 </script>
 
 </body>
