@@ -60,35 +60,7 @@
     }
     footer {
       text-align: center;
-      margin-top: 40px;
-      font-size: 0.9em;
-      color: #aaa;
-    }
-    #start-button {
-      display: block;
-      margin: 20px auto;
-      padding: 10px 20px;
-      font-size: 1.2em;
-      background-color: #28a745;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    #wrong-screen {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(255, 0, 0, 0.8);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2em;
-      z-index: 10;
-      display: none;
+      margin-top: 20px;
     }
     .developer-info {
       position: absolute;
@@ -96,153 +68,57 @@
       right: 10px;
       text-align: center;
     }
-    .developer-info img {
-      width: 60px;
-      height: 60px;
+    .developer-photo {
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
       border: 2px solid #fff;
     }
-    .developer-info p {
-      margin: 5px 0 0;
+    .developer-name {
+      display: block;
+      margin-top: 5px;
       font-size: 0.9em;
+      color: #fff;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="developer-info">
-      <img src="https://www.example.com/abdul-salam-thahim.jpg" alt="Abdul Salam Thahim">
-      <p>Developer Abdul Salam Thahim</p>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/4/4b/Abdul_Salam_Thahim.jpg" alt="Abdul Salam Thahim" class="developer-photo">
+      <span class="developer-name">Abdul Salam Thahim</span>
     </div>
     <h1>Who Wants to Be a Millionaire – Karachi Edition</h1>
-    <button id="start-button">Start Game</button>
-    <div id="quiz-box" class="hidden">
-      <p id="question">Question will appear here</p>
+    <div id="question-container">
+      <p id="question">Press "Start Game" to begin</p>
       <div id="options"></div>
-      <p id="feedback"></p>
-      <p id="score">Score: 0</p>
+      <div id="feedback"></div>
+      <div id="score">Score: 0</div>
     </div>
     <div id="result-box" class="hidden">
-      <h2>Game Over!</h2>
-      <p id="final-score"></p>
-      <button onclick="startQuiz()">Play Again</button>
+      <h2 id="result-message"></h2>
+      <button onclick="startGame()">Start New Game</button>
     </div>
-    <div id="wrong-screen">Wrong Answer!</div>
   </div>
   <footer>
-    Developed by Abdul Salam Thahim
+    <button onclick="startGame()">Start Game</button>
   </footer>
-  <audio id="bg-music" loop>
-    <source src="quiz_background_music.mp3" type="audio/mpeg">
+
+  <audio id="background-music" loop>
+    <source src="background_music.mp3" type="audio/mp3">
+    Your browser does not support the audio element.
   </audio>
+
   <audio id="correct-sound">
-    <source src="correct_answer.mp3" type="audio/mpeg">
+    <source src="correct_answer.mp3" type="audio/mp3">
+    Your browser does not support the audio element.
   </audio>
+
   <audio id="wrong-sound">
-    <source src="wrong_answer.mp3" type="audio/mpeg">
+    <source src="wrong_answer.mp3" type="audio/mp3">
+    Your browser does not support the audio element.
   </audio>
-  <audio id="gameover-sound">
-    <source src="game_over.mp3" type="audio/mpeg">
-  </audio>
-  <script>
-    const questions = [
-      {
-        question: "What is the largest market in Karachi?",
-        options: ["Tariq Road", "Zainab Market", "Saddar", "Empress Market"],
-        answer: "Empress Market"
-      },
-      {
-        question: "What is the national sport of Pakistan?",
-        options: ["Cricket", "Hockey", "Squash", "Football"],
-        answer: "Hockey"
-      },
-      {
-        question: "Where is the mausoleum of Quaid-e-Azam located?",
-        options: ["Lahore", "Islamabad", "Karachi", "Peshawar"],
-        answer: "Karachi"
-      },
-      {
-        question: "Which is a famous beach in Karachi?",
-        options: ["Clifton", "Hawke's Bay", "Sandspit", "Manora"],
-        answer: "Clifton"
-      },
-      {
-        question: "What is the unit of Pakistan's currency?",
-        options: ["Rupee", "Dollar", "Taka", "Dinar"],
-        answer: "Rupee"
-      },
-      {
-        question: "Which is a renowned university in Karachi?",
-        options: ["Punjab University", "Karachi University", "LUMS", "NUST"],
-        answer: "Karachi University"
-      },
-      {
-        question: "Which is the longest river in Pakistan?",
-        options: ["Chenab", "Jhelum", "Indus", "Ravi"],
-        answer: "Indus"
-      },
-      {
-        question: "What is the typical weather in Karachi?",
-        options: ["Winter", "Summer", "Rainy", "All seasons"],
-        answer: "Summer"
-      },
-      {
-        question: "What is the national flower of Pakistan?",
-        options: ["Rose", "Jasmine", "Sunflower", "Lily"],
-        answer: "Jasmine"
-      },
-      {
-        question: "Which is the oldest area in Karachi?",
-        options: ["Defence", "Clifton", "Saddar", "Gulshan"],
-        answer: "Saddar"
-      },
-      {
-        question: "What is the national language of Pakistan?",
-        options: ["Punjabi", "Sindhi", "Urdu", "English"],
-        answer: "Urdu"
-      },
-      {
-        question: "Which is a famous food item in Karachi?",
-        options: ["Biryani", "Pizza", "Burger", "Pasta"],
-        answer: "Biryani"
-      },
-      {
-        question: "When is Pakistan's Independence Day?",
-        options: ["14 August", "15 August", "23 March", "25 December"],
-        answer: "14 August"
-      },
-      {
-        question: "Which is a popular park in Karachi?",
-        options: ["Hill Park", "Safari Park", "Bagh-e-Jinnah", "Aladdin Park"],
-        answer: "Bagh-e-Jinnah"
-      },
-      {
-        question: "What is the national animal of Pakistan?",
-        options: ["Lion", "Markhor", "Tiger", "Elephant"],
-        answer: "Markhor"
-      }
-    ];
 
-    let selectedQuestions = [];
-    let currentQuestionIndex = 0;
-    let score = 0;
-
-    const bgMusic = document.getElementById('bg-music');
-    const correctSound = document.getElementById('correct-sound');
-    const wrongSound = document.getElementById('wrong-sound');
-    const gameoverSound = document.getElementById('gameover-sound');
-    const startButton = document.getElementById('start-button');
-    const quizBox = document.getElementById('quiz-box');
-    const resultBox = document.getElementById('result-box');
-    const wrongScreen = document.getElementById('wrong-screen');
-
-    function getRandomQuestions(array, num) {
-      const shuffled = array.sort(() => 0.5 - Math.random());
-      return shuffled.slice(0, num);
-    }
-
-    function startQuiz() {
-      selectedQuestions = getRandomQuestions(questions, 15);
-      currentQuestionIndex = 0;
-      score = 0;
-      quiz
+  <audio id="game-over-sound">
+    <source src="game_over.mp3" type="audio/mp3">
+    Your br
