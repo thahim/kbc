@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ur">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -11,6 +11,7 @@
       color: #fff;
       margin: 0;
       padding: 0;
+      direction: rtl;
     }
     .container {
       max-width: 700px;
@@ -51,16 +52,6 @@
     #score {
       margin-top: 10px;
     }
-    #next-btn {
-      margin-top: 20px;
-      padding: 10px 20px;
-      font-size: 1em;
-      background-color: #0066cc;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
     #result-box {
       text-align: center;
     }
@@ -79,35 +70,46 @@
   <div class="container">
     <h1>Kaun Banega Crorepati – Karachi Edition</h1>
     <div id="quiz-box">
-      <p id="question">Question will appear here</p>
+      <p id="question">Sawal yahan nazar aayega</p>
       <div id="options"></div>
       <p id="feedback"></p>
       <p id="score">Score: 0</p>
-      <button id="next-btn" class="hidden">Next Question</button>
     </div>
     <div id="result-box" class="hidden">
-      <h2>Quiz Completed!</h2>
+      <h2>Game Khatam Ho Gayi!</h2>
       <p id="final-score"></p>
-      <button onclick="startQuiz()">Play Again</button>
+      <button onclick="startQuiz()">Dobara Khelain</button>
     </div>
   </div>
   <footer>
-    Developed by Abdul Salam Thahim
+    Tayyar Kardah: Abdul Salam Thahim
   </footer>
+  <audio id="bg-music" loop>
+    <source src="quiz_background_music.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="correct-sound">
+    <source src="correct_answer.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="wrong-sound">
+    <source src="wrong_answer.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="gameover-sound">
+    <source src="game_over.mp3" type="audio/mpeg">
+  </audio>
   <script>
     const questions = [
       {
-        question: "Karachi ka sabse bara market kaunsa hai?",
+        question: "Karachi ka sabse bara bazar kaunsa hai?",
         options: ["Tariq Road", "Zainab Market", "Saddar", "Empress Market"],
         answer: "Empress Market"
       },
       {
-        question: "Pakistan ka national sport kya hai?",
+        question: "Pakistan ka qaumi khel kya hai?",
         options: ["Cricket", "Hockey", "Squash", "Football"],
         answer: "Hockey"
       },
       {
-        question: "Quaid-e-Azam ka maqbara kis sheher mein hai?",
+        question: "Quaid-e-Azam ka mazar kis sheher mein hai?",
         options: ["Lahore", "Islamabad", "Karachi", "Peshawar"],
         answer: "Karachi"
       },
@@ -117,7 +119,7 @@
         answer: "Clifton"
       },
       {
-        question: "Pakistan ka currency unit kya hai?",
+        question: "Pakistan ki currency ka unit kya hai?",
         options: ["Rupee", "Dollar", "Taka", "Dinar"],
         answer: "Rupee"
       },
@@ -127,7 +129,7 @@
         answer: "Karachi University"
       },
       {
-        question: "Pakistan ka sabse lamba river kaunsa hai?",
+        question: "Pakistan ka sabse lamba darya kaunsa hai?",
         options: ["Chenab", "Jhelum", "Indus", "Ravi"],
         answer: "Indus"
       },
@@ -137,17 +139,17 @@
         answer: "Garmiyan"
       },
       {
-        question: "Pakistan ka national flower kya hai?",
+        question: "Pakistan ka qaumi phool kya hai?",
         options: ["Rose", "Jasmine", "Sunflower", "Lily"],
         answer: "Jasmine"
       },
       {
-        question: "Karachi ka sabse purana area kaunsa hai?",
+        question: "Karachi ka sabse purana ilaqa kaunsa hai?",
         options: ["Defence", "Clifton", "Saddar", "Gulshan"],
         answer: "Saddar"
       },
       {
-        question: "Pakistan ka national language kya hai?",
+        question: "Pakistan ki qaumi zaban kya hai?",
         options: ["Punjabi", "Sindhi", "Urdu", "English"],
         answer: "Urdu"
       },
@@ -167,7 +169,7 @@
         answer: "Bagh-e-Jinnah"
       },
       {
-        question: "Pakistan ka national animal kya hai?",
+        question: "Pakistan ka qaumi janwar kya hai?",
         options: ["Lion", "Markhor", "Tiger", "Elephant"],
         answer: "Markhor"
       }
@@ -176,6 +178,11 @@
     let selectedQuestions = [];
     let currentQuestionIndex = 0;
     let score = 0;
+
+    const bgMusic = document.getElementById('bg-music');
+    const correctSound = document.getElementById('correct-sound');
+    const wrongSound = document.getElementById('wrong-sound');
+    const gameoverSound = document.getElementById('gameover-sound');
 
     function getRandomQuestions(array, num) {
       const shuffled = array.sort(() => 0.5 - Math.random());
@@ -188,8 +195,8 @@
       score = 0;
       document.getElementById('quiz-box').classList.remove('hidden');
       document.getElementById('result-box').classList.add('hidden');
-      document.getElementById('next-btn').classList.add('hidden');
       showQuestion();
+      bgMusic.play();
     }
 
     function showQuestion() {
@@ -200,46 +207,30 @@
       questionObj.options.forEach(option => {
         const btn = document.createElement('button');
         btn.textContent = option;
-        btn.onclick = () => checkAnswer(option);
+        btn.onclick = () => checkAnswer(btn, option);
         optionsDiv.appendChild(btn);
       });
       document.getElementById('feedback').textContent = '';
       document.getElementById('score').textContent = `Score: ${score}`;
     }
 
-    function checkAnswer(selectedOption) {
+    function checkAnswer(button, selectedOption) {
       const questionObj = selectedQuestions[currentQuestionIndex];
-      if (selectedOption === questionObj.answer) {
-        score += 10;
-        document.getElementById('feedback').textContent = 'Correct!';
-      } else {
-        document.getElementById('feedback').textContent = `Incorrect! The correct answer was: ${questionObj.answer}`;
-      }
-      document.getElementById('score').textContent = `Score: ${score}`;
-      document.getElementById('next-btn').classList.remove('hidden');
-      // Disable all option buttons after selection
       const buttons = document.querySelectorAll('#options button');
       buttons.forEach(btn => btn.disabled = true);
-    }
-
-    document.getElementById('next-btn').addEventListener('click', () => {
-      currentQuestionIndex++;
-      if (currentQuestionIndex < selectedQuestions.length) {
-        showQuestion();
-        document.getElementById('next-btn').classList.add('hidden');
+      if (selectedOption === questionObj.answer) {
+        score += 10;
+        button.style.backgroundColor = 'green';
+        correctSound.play();
+        setTimeout(() => {
+          currentQuestionIndex++;
+          if (currentQuestionIndex < selectedQuestions.length) {
+            showQuestion();
+          } else {
+            endQuiz();
+          }
+        }, 1000);
       } else {
-        endQuiz();
-      }
-    });
-
-    function endQuiz() {
-      document.getElementById('quiz-box').classList.add('hidden');
-      document.getElementById('result-box').classList.remove('hidden');
-      document.getElementById('final-score').textContent = `Your final score is: ${score} out of ${selectedQuestions.length * 10}`;
-    }
-
-    // Start the quiz when the page loads
-    window.onload = startQuiz;
-  </script>
-</body>
-</html>
+        button.style
+::contentReference[oaicite:32]{index=32}
+ 
