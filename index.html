@@ -5,19 +5,68 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Who Wants to Be a Millionaire – Abdul Salam Thahim</title>
   <style>
+    /* ---------- Animated Flare Background ---------- */
     body {
-      font-family: 'Segoe UI', sans-serif;
+      position: relative;
+      overflow: hidden;
       margin: 0;
+      padding: 0;
       background: #111;
       color: #fff;
+      font-family: 'Segoe UI', sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      overflow: hidden;
     }
-    .screen { display: none; text-align: center; width: 100%; max-width: 600px; }
-    .screen.active { display: block; }
+
+    body::before,
+    body::after {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      pointer-events: none;
+    }
+
+    body::before {
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,140,0,0.4), transparent 70%),
+        radial-gradient(circle at 70% 70%, rgba(255,165,0,0.3), transparent 60%);
+      animation: flareRotate 20s linear infinite;
+      z-index: -2;
+    }
+
+    body::after {
+      background:
+        radial-gradient(circle at 50% 50%, rgba(255,140,0,0.2), transparent 80%);
+      animation: flareFade 10s ease-in-out infinite alternate;
+      z-index: -1;
+    }
+
+    @keyframes flareRotate {
+      from { transform: rotate(0deg) scale(1); }
+      to   { transform: rotate(360deg) scale(1); }
+    }
+
+    @keyframes flareFade {
+      from { opacity: 0.3; }
+      to   { opacity: 0.6; }
+    }
+
+    /* ---------- Common Styles ---------- */
+    .screen {
+      display: none;
+      text-align: center;
+      width: 100%;
+      max-width: 600px;
+      z-index: 1;
+    }
+    .screen.active {
+      display: block;
+    }
     button {
       padding: 10px 20px;
       background: orange;
@@ -35,6 +84,28 @@
       display: block;
       border: 5px solid orange;
     }
+    .mini-profile {
+      width: 60px;
+      border-radius: 50%;
+      border: 2px solid orange;
+      vertical-align: middle;
+    }
+    .developer-name {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #fff;
+      -webkit-text-stroke: 2px orange;
+      text-shadow:
+        2px  0   0 orange,
+       -2px  0   0 orange,
+        0    2px 0 orange,
+        0   -2px  0 orange;
+      display: inline-block;
+      margin-left: 10px;
+      vertical-align: middle;
+    }
+
+    /* ---------- Quiz Layout ---------- */
     #quiz .container {
       display: flex;
       flex-direction: column;
@@ -49,7 +120,7 @@
       margin-bottom: 15px;
       text-align: left;
     }
-    .sindhi {
+    .question-box .sindhi {
       font-size: 1rem;
       color: #aaa;
       margin-top: 5px;
@@ -65,6 +136,13 @@
       padding: 20px;
       font-size: 1.2rem;
       color: #fff;
+      text-align: left;
+    }
+    .answers-grid .sindhi {
+      font-size: 1rem;
+      color: #aaa;
+      margin-top: 5px;
+      display: block;
     }
     .progress-bar {
       position: absolute;
@@ -73,34 +151,25 @@
       width: 20px;
       height: 80%;
       background: linear-gradient(orange, darkorange);
-    }
-    #dev-footer {
-      margin-top: 30px;
-    }
-    .mini-profile {
-      width: 60px;
-      border-radius: 50%;
-      border: 2px solid orange;
-      vertical-align: middle;
-    }
-    #dev-footer p {
-      display: inline-block;
-      margin-left: 10px;
-      vertical-align: middle;
+      z-index: 2;
     }
   </style>
 </head>
 <body>
 
-  <!-- HOME -->
+  <!-- HOME SCREEN -->
   <div id="home" class="screen active">
-    <h1>Developed by Abdul Salam Thahim</h1>
+    <h1>Developed by <span class="developer-name">Abdul Salam Thahim</span></h1>
     <h2>Foundation Public School, DHA Karachi</h2>
-    <img src="assets/abdul-salam.jpg" alt="Abdul Salam Thahim" class="profile"/>
+    <img
+      src="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg"
+      alt="Abdul Salam Thahim"
+      class="profile"
+    />
     <button onclick="startGame()">Start</button>
   </div>
 
-  <!-- QUIZ -->
+  <!-- QUIZ SCREEN -->
   <div id="quiz" class="screen">
     <div class="progress-bar" id="progress"></div>
     <div class="container">
@@ -111,21 +180,27 @@
       <div class="answers-grid" id="answers"></div>
     </div>
     <div id="dev-footer">
-      <img src="assets/abdul-salam.jpg" class="mini-profile"/>
-      <p>Abdul Salam Thahim</p>
+      <img
+        src="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg"
+        alt="Abdul Salam Thahim"
+        class="mini-profile"
+      />
+      <span class="developer-name">Abdul Salam Thahim</span>
     </div>
   </div>
 
-  <!-- GAME OVER -->
+  <!-- GAME OVER SCREEN -->
   <div id="gameOver" class="screen">
     <h2>Oh, your answer is not correct</h2>
     <button onclick="goHome()">Go back to Home</button>
   </div>
 
   <script>
-    // 25 Karachi questions (English + Sindhi)
+    // ─── 25 Karachi questions (English + Sindhi) ────────────────────────
     const allQuestions = [
-      { question: "What is the tallest building in Karachi?", sindhiQuestion: "ڪراچيءَ ۾ سڀ کان اوچو عمارت ڪهڙو آهي؟",
+      {
+        question: "What is the tallest building in Karachi?",
+        sindhiQuestion: "ڪراچيءَ ۾ سڀ کان اوچو عمارت ڪهڙو آهي؟",
         answers: [
           { text: "Bahria Icon Tower", sindhi: "بحريه آئڪن ٽاور", correct: true },
           { text: "MCB Tower", sindhi: "ايم سي بي ٽاور", correct: false },
@@ -133,7 +208,9 @@
           { text: "Dolmen Tower", sindhi: "ڊولمن ٽاور", correct: false }
         ]
       },
-      { question: "Which beach is located in Karachi?", sindhiQuestion: "ڪراچيءَ ۾ ڪهڙو ساحل آهي؟",
+      {
+        question: "Which beach is located in Karachi?",
+        sindhiQuestion: "ڪراچيءَ ۾ ڪهڙو ساحل آهي؟",
         answers: [
           { text: "Clifton Beach", sindhi: "ڪلفٽن ساحل", correct: true },
           { text: "Hawke's Bay", sindhi: "هاڪس بے", correct: false },
@@ -141,7 +218,37 @@
           { text: "Sandspit Beach", sindhi: "سينڊ اسپٽ ساحل", correct: false }
         ]
       },
-      /* … add remaining 23 here … */
+      {
+        question: "Which architectural marvel in Karachi is known for its red façade?",
+        sindhiQuestion: "ڪراچيءَ ۾ ڪهڙي عمارت پنهنجي ڳاڙهي ظاهر لاءِ مشهور آهي؟",
+        answers: [
+          { text: "Mohatta Palace", sindhi: "مهاٽا محل", correct: true },
+          { text: "Merewether Clock Tower", sindhi: "ميريويٿي ڪلاڪ ٽاور", correct: false },
+          { text: "Frere Hall", sindhi: "فريئر هال", correct: false },
+          { text: "Quaid’s Mausoleum", sindhi: "قائد جو مزار", correct: false }
+        ]
+      },
+      {
+        question: "The Karachi Stock Exchange is situated on which road?",
+        sindhiQuestion: "ڪراچي اسٽاڪ ايڪسچينج ڪهڙي روڊ تي آهي؟",
+        answers: [
+          { text: "Clifton Road", sindhi: "ڪلفٽن روڊ", correct: false },
+          { text: "II Chundrigar Road", sindhi: "II چندريگار روڊ", correct: true },
+          { text: "Saddar Road", sindhi: "سدار روڊ", correct: false },
+          { text: "Shahrah‑e‑Faisal", sindhi: "شاہراہِ فیصل", correct: false }
+        ]
+      },
+      {
+        question: "Which mausoleum in Karachi is the resting place of the city’s founder?",
+        sindhiQuestion: "ڪراچي جو باني ڪهڙي مزار ۾ دفن آهي؟",
+        answers: [
+          { text: "Mazar‑e‑Quaid", sindhi: "مزارِ قائد", correct: true },
+          { text: "Frere Hall", sindhi: "فريئر هال", correct: false },
+          { text: "Mohatta Palace", sindhi: "مهاٽا محل", correct: false },
+          { text: "Masjid‑e‑Tooba", sindhi: "مسجدِ طوبہ", correct: false }
+        ]
+      },
+      // … add remaining 20 questions here …
     ];
 
     let questions = [], current = 0;
@@ -149,28 +256,26 @@
     function startGame() {
       questions = shuffle(allQuestions).slice(0, 25);
       current = 0;
-      swapScreen("home", "quiz");
+      swapScreen('home', 'quiz');
       showQuestion();
     }
 
     function showQuestion() {
       const q = questions[current];
-      document.getElementById("questionText").textContent = q.question;
-      const qSindhi = document.getElementById("questionSindhi");
+      document.getElementById('questionText').textContent = q.question;
+      const qSindhi = document.getElementById('questionSindhi');
       qSindhi.textContent = q.sindhiQuestion;
 
-      const grid = document.getElementById("answers");
-      grid.innerHTML = "";
+      const grid = document.getElementById('answers');
+      grid.innerHTML = '';
       shuffle(q.answers).forEach(a => {
-        const btn = document.createElement("button");
-        // English
-        const en = document.createElement("div");
+        const btn = document.createElement('button');
+        const en = document.createElement('div');
         en.textContent = a.text;
-        // Sindhi (hidden from TTS)
-        const si = document.createElement("div");
+        const si = document.createElement('div');
         si.textContent = a.sindhi;
-        si.className = "sindhi";
-        si.setAttribute("aria-hidden", "true");
+        si.className = 'sindhi';
+        si.setAttribute('aria-hidden', 'true');
         btn.appendChild(en);
         btn.appendChild(si);
         btn.onclick = () => checkAnswer(a.correct);
@@ -178,56 +283,53 @@
       });
 
       updateProgress();
-      speak(q.question);  // Read question aloud :contentReference[oaicite:2]{index=2}
+      speak(q.question);
     }
 
     function checkAnswer(isCorrect) {
       if (isCorrect) {
-        speak("Correct answer", () => {
+        speak('Correct answer', () => {
           flashScreen();
           current++;
-          if (current < questions.length) {
-            showQuestion();
-          } else {
-            speak("Congratulations! You’ve won!", goHome);
-          }
+          if (current < questions.length) showQuestion();
+          else speak('Congratulations! You’ve won!', goHome);
         });
       } else {
-        speak("Oh, your answer is not correct", () => {
-          swapScreen("quiz", "gameOver");
+        speak('Oh, your answer is not correct', () => {
+          swapScreen('quiz', 'gameOver');
         });
       }
     }
 
     function goHome() {
-      swapScreen("gameOver", "home");
+      swapScreen('gameOver', 'home');
     }
 
     function swapScreen(hideId, showId) {
-      document.getElementById(hideId).classList.remove("active");
-      document.getElementById(showId).classList.add("active");
+      document.getElementById(hideId).classList.remove('active');
+      document.getElementById(showId).classList.add('active');
     }
 
     function flashScreen() {
-      document.body.style.background = "#fff";
-      setTimeout(() => document.body.style.background = "#111", 100);
+      document.body.style.background = '#fff';
+      setTimeout(() => document.body.style.background = '#111', 100);
     }
 
     function updateProgress() {
-      const bar = document.getElementById("progress");
-      bar.style.height = ((current + 1) / 25 * 100) + "%";
+      document.getElementById('progress').style.height =
+        ((current + 1) / 25 * 100) + '%';
     }
 
-    function speak(text, callback) {
+    function speak(text, cb) {
       const msg = new SpeechSynthesisUtterance(text);
-      msg.lang = "en-GB";               // :contentReference[oaicite:3]{index=3}
-      msg.onend = () => callback && callback();
+      msg.lang = 'en-GB';
+      msg.onend = () => cb && cb();
       speechSynthesis.cancel();
-      speechSynthesis.speak(msg);       // :contentReference[oaicite:4]{index=4}
+      speechSynthesis.speak(msg);
     }
 
     function shuffle(arr) {
-      return arr.slice().sort(() => Math.random() - 0.5); // :contentReference[oaicite:5]{index=5}
+      return arr.slice().sort(() => Math.random() - 0.5);
     }
   </script>
 </body>
