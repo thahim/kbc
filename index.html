@@ -79,6 +79,24 @@
     background-color: orange;
     color: black;
   }
+
+  /* Modal styles */
+  #modal {
+    display: none; /* Hidden by default */
+    position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.7);
+    justify-content: center; align-items: center;
+  }
+  #modal-content {
+    background: #222; border: 3px solid orange; border-radius: 15px;
+    padding: 30px 40px; max-width: 400px; color: white;
+    font-size: 22px; text-align: center;
+  }
+  #modal-button {
+    margin-top: 20px; background: orange; border: none; padding: 10px 20px;
+    font-size: 18px; font-weight: bold; color: black; border-radius: 10px;
+    cursor: pointer;
+  }
 </style>
 </head>
 <body>
@@ -107,8 +125,16 @@
   <div>Developed by Abdul Salam Thahim</div>
 </footer>
 
+<!-- Modal for answer result -->
+<div id="modal">
+  <div id="modal-content">
+    <div id="modal-text"></div>
+    <button id="modal-button">Next Question</button>
+  </div>
+</div>
+
 <script>
-  // 25 unique Karachi-related questions with English + Sindhi translations & answers
+  // 25 unique Karachi-related questions
   const originalQuestions = [
     {
       question: "What is the nickname of Karachi?",
@@ -183,169 +209,283 @@
       correct: "Urdu"
     },
     {
-      question: "Karachi is famous for which food?",
-      translation: "ڪراچي ڪهڙي کاڌي لاءِ مشهور آهي؟",
-      answers: ["Biryani", "Pasta", "Pizza", "Sushi"],
-      correct: "Biryani"
+      question: "Which sector is Karachi's financial hub?",
+      translation: "ڪراچي جو مالي مرڪز ڪهڙو شعبو آهي؟",
+      answers: ["I.I. Chundrigar Road", "Clifton", "Gulshan-e-Iqbal", "Korangi"],
+      correct: "I.I. Chundrigar Road"
     },
     {
-      question: "Which famous beach is in Karachi?",
-      translation: "ڪراچي ۾ مشهور سامونڊي ڪنارو ڪهڙو آهي؟",
-      answers: ["Clifton Beach", "Miami Beach", "Santa Monica", "Bondi Beach"],
+      question: "Which beach is famous in Karachi?",
+      translation: "ڪراچي ۾ مشهور ساحل ڪهڙو آهي؟",
+      answers: ["Clifton Beach", "French Beach", "Hawkes Bay", "Sandspit Beach"],
       correct: "Clifton Beach"
     },
     {
-      question: "Karachi is the financial capital of which country?",
-      translation: "ڪراچي ڪهڙي ملڪ جي مالي راڄڌاني آهي؟",
-      answers: ["Pakistan", "India", "Bangladesh", "Nepal"],
-      correct: "Pakistan"
+      question: "Which is the oldest residential area in Karachi?",
+      translation: "ڪراچي جو سڀ کان پراڻو رهائشي علائقو ڪهڙو آهي؟",
+      answers: ["Lyari", "Gulshan", "Korangi", "North Nazimabad"],
+      correct: "Lyari"
     },
     {
-      question: "Karachi’s famous zoo is called?",
-      translation: "ڪراچي جو مشهور چڙيا گهر ڪهڙو آهي؟",
-      answers: ["Karachi Zoo", "Lahore Zoo", "Islamabad Zoo", "Peshawar Zoo"],
-      correct: "Karachi Zoo"
-    },
-    {
-      question: "Which university is in Karachi?",
-      translation: "ڪراچي ۾ ڪهڙي يونيورسٽي آهي؟",
-      answers: ["University of Karachi", "Punjab University", "NUST", "Quaid-e-Azam University"],
-      correct: "University of Karachi"
-    },
-    {
-      question: "What kind of climate does Karachi have?",
-      translation: "ڪراچي جو موسم ڪهڙو آهي؟",
-      answers: ["Arid", "Tropical", "Temperate", "Cold"],
-      correct: "Arid"
-    },
-    {
-      question: "Karachi's main public transport is?",
-      translation: "ڪراچي جو اهم پبلڪ ٽرانسپورٽ ڇا آهي؟",
-      answers: ["Buses", "Trains", "Metro", "Trams"],
-      correct: "Buses"
-    },
-    {
-      question: "Which festival is widely celebrated in Karachi?",
-      translation: "ڪراچي ۾ ڪهڙو ميلو وڏي پيماني تي ملهايو ويندو آهي؟",
-      answers: ["Eid", "Christmas", "Diwali", "Holi"],
-      correct: "Eid"
-    },
-    {
-      question: "Karachi’s famous tower is?",
-      translation: "ڪراچي جو مشهور ٽاور ڪهڙو آهي؟",
-      answers: ["Habib Bank Tower", "CN Tower", "Burj Khalifa", "Eiffel Tower"],
-      correct: "Habib Bank Tower"
-    },
-    {
-      question: "Which major port is in Karachi?",
-      translation: "ڪراچي ۾ ڪهڙو اهم بندرگاهه آهي؟",
-      answers: ["Port of Karachi", "Port of Mumbai", "Port of Singapore", "Port of Rotterdam"],
+      question: "Karachi's main port is called?",
+      translation: "ڪراچي جو مکيه بندرگاهه ڇا سڏجي ٿو؟",
+      answers: ["Port of Karachi", "Port Qasim", "Gwadar Port", "Bin Qasim"],
       correct: "Port of Karachi"
     },
     {
-      question: "Which of these is a famous Karachi shopping district?",
-      translation: "هيٺين مان ڪهڙو ڪراچي جو مشهور خريداري وارو علائقو آهي؟",
-      answers: ["Saddar", "Defence", "Gulshan-e-Iqbal", "Clifton"],
-      correct: "Saddar"
+      question: "Which university is located in Karachi?",
+      translation: "ڪراچي ۾ ڪهڙي يونيورسٽي آهي؟",
+      answers: ["University of Karachi", "Punjab University", "NED University", "Iqra University"],
+      correct: "University of Karachi"
     },
     {
-      question: "Karachi’s nickname for its inhabitants is?",
-      translation: "ڪراچي وارن لاءِ عرفيت ڇا آهي؟",
-      answers: ["Karachiwala", "Lahori", "Peshawari", "Quetiani"],
-      correct: "Karachiwala"
+      question: "What is the main language spoken at Karachi's bazaars?",
+      translation: "ڪراچي جي بازارن ۾ مکيه ڳالهائي ويندڙ ٻولي ڪهڙي آهي؟",
+      answers: ["Sindhi", "Urdu", "Punjabi", "English"],
+      correct: "Urdu"
     },
     {
-      question: "Which is a major highway in Karachi?",
-      translation: "ڪراچي ۾ ڪهڙو وڏو هاءِ وي آهي؟",
-      answers: ["Super Highway", "Motorway", "Ring Road", "National Highway"],
-      correct: "Super Highway"
+      question: "Karachi was the capital of Pakistan until?",
+      translation: "ڪراچي پاڪستان جي راڄڌاني هئي ڪيتري وقت تائين؟",
+      answers: ["1959", "1947", "1965", "1970"],
+      correct: "1959"
+    },
+    {
+      question: "Which famous tower is in Karachi?",
+      translation: "ڪراچي ۾ ڪهڙو مشهور ٽاور آهي؟",
+      answers: ["Mazar-e-Quaid Tower", "Habib Bank Tower", "Empress Tower", "Bahria Icon Tower"],
+      correct: "Bahria Icon Tower"
+    },
+    {
+      question: "Which mode of transport is most common in Karachi?",
+      translation: "ڪراچي ۾ سڀ کان وڌيڪ استعمال ٿيندڙ ٽرانسپورٽ ڪهڙو آهي؟",
+      answers: ["Rickshaw", "Metro Bus", "Taxi", "Train"],
+      correct: "Rickshaw"
+    },
+    {
+      question: "What is Karachi's famous food item?",
+      translation: "ڪراچي جو مشهور کاڌو ڇا آهي؟",
+      answers: ["Biryani", "Nihari", "Chapli Kebab", "Haleem"],
+      correct: "Biryani"
+    },
+    {
+      question: "Which festival is widely celebrated in Karachi?",
+      translation: "ڪراچي ۾ ڪهڙو ميلو وڏي پيماني تي ملهائبو آهي؟",
+      answers: ["Eid", "Diwali", "Christmas", "Holi"],
+      correct: "Eid"
+    },
+    {
+      question: "Which shopping mall is popular in Karachi?",
+      translation: "ڪراچي ۾ مشهور شاپنگ مال ڪهڙو آهي؟",
+      answers: ["Dolmen Mall", "Lucky One Mall", "Ocean Mall", "Hyderabad Mall"],
+      correct: "Lucky One Mall"
     }
   ];
 
   let questions = [];
   let current = 0;
+  let speechSynthesisUtterance = null;
 
-  function shuffleArray(arr) {
-    for (let i = arr.length -1; i > 0; i--) {
-      let j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-  }
+  const homeScreen = document.getElementById('home-screen');
+  const questionScreen = document.getElementById('question-screen');
+  const questionEl = document.getElementById('question');
+  const answersEl = document.getElementById('answers');
+  const progressEl = document.getElementById('progress');
+  const modal = document.getElementById('modal');
+  const modalText = document.getElementById('modal-text');
+  const modalButton = document.getElementById('modal-button');
 
+  // Start Game
   function startGame() {
-    speechSynthesis.cancel();
-    questions = [...originalQuestions];
-    shuffleArray(questions);
     current = 0;
-    document.getElementById('home-screen').style.display = 'none';
-    document.getElementById('question-screen').style.display = 'block';
+    questions = shuffleArray([...originalQuestions]).slice(0, 25);
+    homeScreen.style.display = 'none';
+    questionScreen.style.display = 'block';
+    updateProgress();
     showQuestion();
   }
 
+  // Show question and answers
   function showQuestion() {
-    speechSynthesis.cancel();
+    stopSpeech();
+
     if (current >= questions.length) {
-      alert("You've completed the game!");
-      location.reload();
+      // Game finished
+      showModal("Congratulations! You have completed the game.");
       return;
     }
-    const q = questions[current];
-    const questionEl = document.getElementById('question');
-    // Show question text without question number
-    questionEl.innerHTML = `<h2>${q.question}</h2><p><em>${q.translation}</em></p>`;
 
-    const answersEl = document.getElementById('answers');
+    const q = questions[current];
+    questionEl.innerHTML = `<strong>${q.question}</strong><br><em style="font-style: italic; font-weight: normal; color: #bbb;">${q.translation}</em>`;
+
     answersEl.innerHTML = '';
     q.answers.forEach(ans => {
       const div = document.createElement('div');
       div.className = 'answer-box';
-      div.textContent = ans;
+      div.textContent = ans + " / " + translateAnswer(ans);
       div.onclick = () => answerSelected(ans);
       answersEl.appendChild(div);
     });
 
     updateProgress();
+    speakText(q.question + ". The options are: " + q.answers.join(", "));
   }
 
+  // Translate English answers to Sindhi for display
+  function translateAnswer(ans) {
+    const map = {
+      "City of Lights": "روشنيءَ جو شهر",
+      "City of Gardens": "باغن جو شهر",
+      "City of Rivers": "دريائن جو شهر",
+      "City of Mountains": "پهاڙن جو شهر",
+      "Arabian Sea": "عربي سمنڊ",
+      "Red Sea": "سرخ سمنڊ",
+      "Baltic Sea": "بالٽڪ سمنڊ",
+      "Mediterranean Sea": "بحر اوقيانوس",
+      "Sindh": "سنڌ",
+      "Punjab": "پنجاب",
+      "Balochistan": "بلوچستان",
+      "Khyber Pakhtunkhwa": "خيبر پختونخوا",
+      "Jinnah International Airport": "جناح انٽرنيشنل ايئرپورٽ",
+      "Heathrow Airport": "هيٿرو ايئرپورٽ",
+      "Dubai Airport": "دبئي ايئرپورٽ",
+      "Lahore Airport": "لاهور ايئرپورٽ",
+      "Empress Market": "ايمپريس مارڪيٽ",
+      "Anarkali Bazaar": "انارڪلي بازار",
+      "Gulshan Market": "گلشن مارڪيٽ",
+      "Liberty Market": "لبريٽي مارڪيٽ",
+      "Southern Coast": "ڏکڻ وارو ڪنارو",
+      "Northern Coast": "اتر وارو ڪنارو",
+      "Eastern Coast": "اوڀر وارو ڪنارو",
+      "Western Coast": "مغرب وارو ڪنارو",
+      "15 million": "15 ملين",
+      "5 million": "5 ملين",
+      "25 million": "25 ملين",
+      "10 million": "10 ملين",
+      "Malir River": "ملير درياء",
+      "Indus River": "سندھ درياء",
+      "Chenab River": "چناب درياء",
+      "Jhelum River": "جهلم درياء",
+      "Port Trade": "بندرگاهه واپار",
+      "Mining": "کني",
+      "Agriculture": "زراعت",
+      "Tourism": "سياحت",
+      "Cricket": "ڪرڪيٽ",
+      "Football": "فٽبال",
+      "Hockey": "هڪي",
+      "Tennis": "ٽينس",
+      "Mazar-e-Quaid": "مزارِ قائد",
+      "Badshahi Mosque": "بادشاهي مسجد",
+      "Lahore Fort": "لاهور قلعو",
+      "Shalimar Gardens": "شاليمار باغ",
+      "Urdu": "اردو",
+      "Sindhi": "سنڌي",
+      "Punjabi": "پنجابي",
+      "Balochi": "بلوچي",
+      "I.I. Chundrigar Road": "آءِ آءِ چندريگر روڊ",
+      "Clifton": "ڪلفٽن",
+      "Gulshan-e-Iqbal": "گلشنِ اقبال",
+      "Korangi": "ڪورنگي",
+      "Clifton Beach": "ڪلفٽن ساحل",
+      "French Beach": "فرينچ بيچ",
+      "Hawkes Bay": "هاڪس بي",
+      "Sandspit Beach": "سينڊ اسپٽ بيچ",
+      "Lyari": "لياري",
+      "North Nazimabad": "نارتھ ناظم آباد",
+      "Port of Karachi": "ڪراچي بندرگاهه",
+      "Port Qasim": "پورٽ قاسم",
+      "Gwadar Port": "گوادر پورٽ",
+      "Bin Qasim": "بن قاسم",
+      "University of Karachi": "ڪراچي يونيورسٽي",
+      "Punjab University": "پنجاب يونيورسٽي",
+      "NED University": "اين اي ڊي يونيورسٽي",
+      "Iqra University": "اقراء يونيورسٽي",
+      "1959": "1959",
+      "1947": "1947",
+      "1965": "1965",
+      "1970": "1970",
+      "Mazar-e-Quaid Tower": "مزارِ قائد ٽاور",
+      "Habib Bank Tower": "حبيب بينڪ ٽاور",
+      "Empress Tower": "ايمپريس ٽاور",
+      "Bahria Icon Tower": "بحريا آئڪن ٽاور",
+      "Rickshaw": "رڪشا",
+      "Metro Bus": "ميٽرو بس",
+      "Taxi": "ٽيڪسي",
+      "Train": "ريل گاڏي",
+      "Biryani": "برياني",
+      "Nihari": "نهاري",
+      "Chapli Kebab": "چپلي ڪباب",
+      "Haleem": "حليم",
+      "Eid": "عيد",
+      "Diwali": "ديوالي",
+      "Christmas": "ڪرسمس",
+      "Holi": "هولي",
+      "Dolmen Mall": "ڊولمين مال",
+      "Lucky One Mall": "لڪي ون مال",
+      "Ocean Mall": "اوشن مال",
+      "Hyderabad Mall": "حيدرآباد مال"
+    };
+    return map[ans] || ans;
+  }
+
+  // Answer selection handler
   function answerSelected(selected) {
-    const q = questions[current];
-    if (selected === q.correct) {
-      alert("Correct!");
+    stopSpeech();
+
+    const correctAnswer = questions[current].correct;
+    if (selected === correctAnswer) {
+      showModal("Correct! " + selected + " / " + translateAnswer(selected));
     } else {
-      alert(`Wrong! Correct answer was: ${q.correct}`);
-    }
-    current++;
-    showQuestion();
-  }
-
-  function updateProgress() {
-    const progressEl = document.getElementById('progress');
-    progressEl.innerHTML = '';
-
-    for(let i=questions.length-1; i >= 0; i--) {
-      const div = document.createElement('div');
-      div.className = 'prog-number';
-      if (i === current) div.classList.add('active');
-      div.textContent = i + 1;
-      progressEl.appendChild(div);
+      showModal("Incorrect! Correct answer is: " + correctAnswer + " / " + translateAnswer(correctAnswer));
     }
   }
 
-  document.getElementById('start-btn').addEventListener('click', startGame);
+  // Modal dialog
+  function showModal(message) {
+    modalText.textContent = message;
+    modal.style.display = 'flex';
+  }
 
-  // Initialize progress bar with numbers but hidden until start
-  function initProgress() {
-    const progressEl = document.getElementById('progress');
-    progressEl.innerHTML = '';
-    for(let i=originalQuestions.length-1; i >= 0; i--) {
-      const div = document.createElement('div');
-      div.className = 'prog-number';
-      div.textContent = i + 1;
-      progressEl.appendChild(div);
+  // Modal close button
+  modalButton.onclick = () => {
+    modal.style.display = 'none';
+    if (current < questions.length) {
+      current++;
+      showQuestion();
+    } else {
+      // Game finished, back to home
+      questionScreen.style.display = 'none';
+      homeScreen.style.display = 'block';
+    }
+  };
+
+  // Text-to-Speech (TTS)
+  function speakText(text) {
+    if ('speechSynthesis' in window) {
+      speechSynthesis.cancel();
+      speechSynthesisUtterance = new SpeechSynthesisUtterance(text);
+      speechSynthesisUtterance.lang = 'en-US';
+      speechSynthesis.speak(speechSynthesisUtterance);
     }
   }
-  initProgress();
 
+  function stopSpeech() {
+    if (speechSynthesisUtterance) {
+      speechSynthesis.cancel();
+      speechSynthesisUtterance = null;
+    }
+  }
+
+  // Shuffle array helper
+  function shuffleArray(array) {
+    for (let i = array.length -1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i+1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
 </script>
+
 </body>
 </html>
+
