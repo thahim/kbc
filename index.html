@@ -1,262 +1,155 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sd">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Who wants to be a millionaire? - Abdul Salam Thahim</title>
-  <meta name="description" content="Play Who wants to be a millionaire? - A quiz game about Pakistan and Karachi. Developed by Abdul Salam Thahim." />
-  
-  <!-- Open Graph / Facebook -->
-  <meta property="og:title" content="Who wants to be a millionaire? - Abdul Salam Thahim" />
-  <meta property="og:description" content="Play Who wants to be a millionaire? - A quiz game about Pakistan and Karachi. Developed by Abdul Salam Thahim." />
-  <meta property="og:image" content="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg" />
-  <meta property="og:url" content="https://yourwebsite.com" />
-  <meta property="og:type" content="website" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ڪير ٿيندو ڪرورپاتي</title>
 
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Who wants to be a millionaire? - Abdul Salam Thahim" />
-  <meta name="twitter:description" content="Play Who wants to be a millionaire? - A quiz game about Pakistan and Karachi. Developed by Abdul Salam Thahim." />
-  <meta name="twitter:image" content="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg" />
+<meta property="og:title" content="ڪير ٿيندو ڪرورپاتي" />
+<meta property="og:image" content="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg" />
+<meta property="og:type" content="website" />
+<meta name="description" content="Who Wants to Be a Millionaire Game in Sindhi about Pakistan and Karachi. Developed by Abdul Salam Thahim." />
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-      color: #fff;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
-    .container {
-      background: #1c1c1c;
-      padding: 30px 40px;
-      border-radius: 12px;
-      max-width: 700px;
-      box-shadow: 0 0 15px #000;
-      position: relative;
-      text-align: center;
-    }
-    .developer-info {
-      margin-bottom: 25px;
-    }
-    .developer-photo {
-      width: 90px;
-      height: 90px;
-      border-radius: 50%;
-      border: 3px solid #03dac5;
-      object-fit: cover;
-      margin-bottom: 8px;
-    }
-    h1 {
-      margin: 0 0 5px;
-    }
-    h2 {
-      margin: 0 0 25px;
-      font-weight: normal;
-      color: #ccc;
-    }
-    #question-number {
-      font-size: 1.2em;
-      margin-bottom: 10px;
-    }
-    #question-text {
-      font-size: 1.3em;
-      margin-bottom: 20px;
-    }
-    #options button {
-      width: 100%;
-      background: #333;
-      border: none;
-      border-radius: 8px;
-      color: white;
-      font-size: 1.1em;
-      padding: 12px;
-      margin: 8px 0;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    #options button:hover {
-      background: #03dac5;
-    }
-    #popup {
-      position: fixed;
-      top: 40%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: #222;
-      border: 2px solid #03dac5;
-      padding: 20px 40px;
-      font-size: 1.5em;
-      border-radius: 10px;
-      display: none;
-      z-index: 1000;
-      text-align: center;
-    }
-    #restart-btn {
-      margin-top: 20px;
-      padding: 12px 30px;
-      font-size: 1.1em;
-      background: #d32f2f;
-      border: none;
-      border-radius: 8px;
-      color: white;
-      cursor: pointer;
-    }
-    #restart-btn:hover {
-      background: #b71c1c;
-    }
-  </style>
+<style>
+  body {
+    background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #fff;
+    margin: 0; padding: 0;
+    display: flex; flex-direction: column; align-items: center;
+    min-height: 100vh;
+    direction: rtl; /* Sindhi is written right to left */
+  }
+  header {
+    text-align: center;
+    padding: 20px 10px 10px;
+  }
+  header h1 {
+    font-size: 2.2rem;
+    margin: 0;
+  }
+  .developer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 25px;
+  }
+  .developer img {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    object-fit: cover;
+  }
+  .developer span {
+    font-size: 1rem;
+    color: #ddd;
+  }
+  .container {
+    background: #1c1c1ccc;
+    border-radius: 10px;
+    padding: 25px 20px 30px;
+    max-width: 650px;
+    width: 90%;
+    box-shadow: 0 0 15px #111;
+    direction: rtl;
+  }
+  #question-number {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    color: #a9d6ff;
+  }
+  #question {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  #question-sindhi {
+    font-size: 1.1rem;
+    font-style: italic;
+    margin-bottom: 20px;
+    color: #b0e0ffcc;
+  }
+  #options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  #options button {
+    background: #33475b;
+    border: none;
+    border-radius: 7px;
+    color: #fff;
+    padding: 12px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    direction: ltr; /* button text LTR for clarity */
+  }
+  #options button:hover {
+    background: #5578a7;
+  }
+  #popup {
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #222d3add;
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: 700;
+    padding: 20px 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 12px #5578a7;
+    display: none;
+    z-index: 9999;
+    text-align: center;
+  }
+  #popup button {
+    margin-top: 15px;
+    padding: 10px 25px;
+    background: #5578a7;
+    border: none;
+    border-radius: 7px;
+    font-size: 1rem;
+    color: #fff;
+    cursor: pointer;
+  }
+  footer {
+    margin-top: auto;
+    padding: 15px;
+    color: #ccc;
+    font-size: 0.9rem;
+    text-align: center;
+  }
+</style>
 </head>
 <body>
 
-<div class="container">
-  <div class="developer-info">
-    <img src="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg" alt="Abdul Salam Thahim" class="developer-photo" />
-    <div>Developed by Abdul Salam Thahim</div>
+<header>
+  <h1>ڪير ٿيندو ڪرورپاتي</h1>
+  <div class="developer">
+    <img src="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg" alt="عبدالسلام طهيم" />
+    <span>عبدالسلام طهيم پاران تيار ٿيل</span>
   </div>
+</header>
 
-  <h1>Kaun Banega Crorepati</h1>
-  <h2>Who Wants to Be a Millionaire?</h2>
-
-  <div id="question-number"></div>
-  <div id="question-text">Press "Start Game" to begin</div>
+<div class="container">
+  <div id="question-number">سوال 1 / 15</div>
+  <div id="question">گيم شروع ڪرڻ لاءِ "شروع ڪريو" تي ڪلڪ ڪريو</div>
+  <div id="question-sindhi"></div>
   <div id="options"></div>
-
-  <button id="start-btn" style="margin-top: 20px; font-size: 1.1em; padding: 12px 25px; cursor:pointer;">Start Game</button>
 </div>
 
 <div id="popup"></div>
 
-<!-- Background music: actual Who Wants to Be a Millionaire theme -->
-<audio id="bg-music" loop>
-  <source src="https://actions.google.com/sounds/v1/ambiences/millionaire_game_show_theme.ogg" type="audio/ogg" />
-  <source src="https://actions.google.com/sounds/v1/ambiences/millionaire_game_show_theme.mp3" type="audio/mpeg" />
-</audio>
-
-<!-- Sounds -->
-<audio id="correct-sound" src="https://www.soundjay.com/buttons/sounds/button-4.mp3"></audio>
-<audio id="wrong-sound" src="https://www.soundjay.com/buttons/sounds/button-10.mp3"></audio>
+<footer>
+  <button id="start-btn">شروع ڪريو</button>
+</footer>
 
 <script>
-  const questionsPool = [
-    {q:"Pakistan's national language?", options:["Urdu","Punjabi","Sindhi","Pashto"], answer:0},
-    {q:"Karachi is located in which province?", options:["Sindh","Punjab","Balochistan","Khyber Pakhtunkhwa"], answer:0},
-    {q:"Pakistan's independence year?", options:["1947","1950","1935","1945"], answer:0},
-    {q:"Karachi's famous beach?", options:["Clifton Beach","French Beach","Hawke's Bay","Sandspit Beach"], answer:0},
-    {q:"Pakistan's currency?", options:["Rupee","Dollar","Euro","Pound"], answer:0},
-    {q:"Karachi is capital of?", options:["Sindh","Punjab","Balochistan","Khyber Pakhtunkhwa"], answer:0},
-    {q:"Pakistan's founder?", options:["Quaid-e-Azam","Allama Iqbal","Liaquat Ali Khan","Benazir Bhutto"], answer:0},
-    {q:"Karachi’s airport code?", options:["KHI","LHE","ISB","PEW"], answer:0},
-    {q:"Pakistan's national sport?", options:["Hockey","Cricket","Football","Squash"], answer:0},
-    {q:"Largest city in Pakistan?", options:["Karachi","Lahore","Islamabad","Quetta"], answer:0},
-    {q:"Karachi’s famous food?", options:["Biryani","Pasta","Burger","Sushi"], answer:0},
-    {q:"Pakistan's flag colors?", options:["Green and White","Red and White","Blue and Yellow","Black and Orange"], answer:0},
-    {q:"Karachi’s nickname?", options:["City of Lights","City of Gardens","City of Sufis","City of Saints"], answer:0},
-    {q:"Famous Karachi landmark?", options:["Mazar-e-Quaid","Badshahi Mosque","Minar-e-Pakistan","Faisal Mosque"], answer:0},
-    {q:"Pakistan’s national flower?", options:["Jasmine","Rose","Sunflower","Lily"], answer:0}
-  ];
-
-  let selectedQuestions = [];
-  let currentIndex = 0;
-
-  const questionNumberElem = document.getElementById("question-number");
-  const questionTextElem = document.getElementById("question-text");
-  const optionsElem = document.getElementById("options");
-  const startBtn = document.getElementById("start-btn");
-  const popup = document.getElementById("popup");
-
-  const bgMusic = document.getElementById("bg-music");
-  const correctSound = document.getElementById("correct-sound");
-  const wrongSound = document.getElementById("wrong-sound");
-
-  function shuffleArray(arr) {
-    for(let i = arr.length - 1; i > 0; i--){
-      const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr;
-  }
-
-  function startGame() {
-    // Pick 15 random questions from pool
-    selectedQuestions = shuffleArray([...questionsPool]).slice(0, 15);
-    currentIndex = 0;
-    startBtn.style.display = "none";
-    bgMusic.play();
-    showQuestion();
-  }
-
-  function showQuestion() {
-    const currentQ = selectedQuestions[currentIndex];
-    questionNumberElem.textContent = `Question No: ${currentIndex + 1} / 15`;
-
-    // Randomize options but keep correct answer index tracked
-    let optionsArr = [...currentQ.options];
-    let correctAnswer = currentQ.options[currentQ.answer];
-
-    // Shuffle options
-    optionsArr = shuffleArray(optionsArr);
-
-    // Render options buttons
-    optionsElem.innerHTML = "";
-    optionsArr.forEach((opt, idx) => {
-      const btn = document.createElement("button");
-      btn.textContent = opt;
-      btn.onclick = () => handleAnswer(opt === correctAnswer);
-      optionsElem.appendChild(btn);
-    });
-
-    questionTextElem.textContent = currentQ.q;
-  }
-
-  function handleAnswer(isCorrect) {
-    if (isCorrect) {
-      popup.textContent = "Sahi Jawab!";
-      popup.style.borderColor = "#4CAF50";
-      popup.style.display = "block";
-      correctSound.play();
-
-      setTimeout(() => {
-        popup.style.display = "none";
-        currentIndex++;
-        if(currentIndex >= selectedQuestions.length){
-          alert("Congratulations! You completed all questions.");
-          resetGame();
-        } else {
-          showQuestion();
-        }
-      }, 500);
-    } else {
-      popup.innerHTML = `Oh! Ghalat Jawab<br><button id="restart-btn">Restart Game</button>`;
-      popup.style.borderColor = "#f44336";
-      popup.style.display = "block";
-      wrongSound.play();
-
-      document.getElementById("restart-btn").onclick = () => {
-        resetGame();
-      };
-    }
-  }
-
-  function resetGame() {
-    popup.style.display = "none";
-    currentIndex = 0;
-    selectedQuestions = [];
-    questionNumberElem.textContent = "";
-    questionTextElem.textContent = "Press \"Start Game\" to begin";
-    optionsElem.innerHTML = "";
-    startBtn.style.display = "inline-block";
-    bgMusic.pause();
-    bgMusic.currentTime = 0;
-  }
-
-  startBtn.addEventListener("click", startGame);
-
+  // Game logic will go here
 </script>
 
 </body>
