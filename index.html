@@ -1,146 +1,338 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta property="og:title" content="Who wants to be a millionaire?" />
-  <meta property="og:description" content="Developed by Abdul Salam Thahim" />
-  <meta property="og:image" content="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Who Wants to Be a Millionaire?</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #001f3f;
-      color: white;
-      overflow-x: hidden;
-    }
-    .screen {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 20px;
-      text-align: center;
-    }
-    .active {
-      display: flex;
-    }
-    .photo-row img {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      margin: 10px;
-    }
-    .start-btn {
-      padding: 15px 30px;
-      font-size: 1.2em;
-      background-color: orange;
-      color: black;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-    #questionText {
-      font-size: 1.5rem;
-      margin-bottom: 15px;
-      border: 3px solid orange;
-      padding: 15px;
-      border-radius: 10px;
-      background: black;
-    }
-    #translation {
-      font-size: 1.1rem;
-      color: #ccc;
-      margin-bottom: 20px;
-    }
-    #answers {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
-      width: 100%;
-      max-width: 500px;
-    }
-    .answer {
-      background: black;
-      color: white;
-      border: 2px solid orange;
-      border-radius: 10px;
-      padding: 15px;
-      font-size: 1rem;
-      cursor: pointer;
-    }
-    .progress-container {
-      position: fixed;
-      right: 0;
-      top: 0;
-      height: 100%;
-      width: 30px;
-      background: #222;
-      display: flex;
-      flex-direction: column-reverse;
-    }
-    .progress-bar {
-      background: orange;
-      width: 100%;
-      transition: height 0.3s;
-    }
-    footer {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      background: #000;
-      color: orange;
-      text-align: center;
-      padding: 10px;
-    }
-    footer img {
-      height: 40px;
-      width: 40px;
-      border-radius: 50%;
-    }
-    .modal {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.8);
-      display: none;
-      justify-content: center;
-      align-items: center;
-    }
-    .modal-content {
-      background: #111;
-      padding: 20px;
-      border: 2px solid orange;
-      border-radius: 10px;
-      text-align: center;
-    }
-    .flash {
-      animation: flash-bg 0.3s;
-    }
-    @keyframes flash-bg {
-      from { background: #001f3f; }
-      to { background: #28a745; }
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kaun Banega Crorepati - Karachi Quiz</title>
+<style>
+  body {
+    background-color: #000;
+    color: orange;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0; padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  #gameContainer {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  #questionBox {
+    background: black;
+    border: 2px solid orange;
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 700px;
+    width: 90%;
+    font-size: 24px;
+    min-height: 100px;
+    margin-bottom: 25px;
+    position: relative;
+  }
+  #translation {
+    font-size: 18px;
+    color: #ffae42cc;
+    margin-top: 8px;
+    font-style: italic;
+  }
+  .options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    width: 90%;
+    max-width: 700px;
+    margin-bottom: 40px;
+  }
+  .option {
+    background-color: black;
+    border: 2px solid orange;
+    border-radius: 10px;
+    padding: 15px;
+    font-size: 20px;
+    color: orange;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  .option.disabled {
+    cursor: default;
+    opacity: 0.6;
+  }
+  .option.correct {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: white;
+  }
+  .option.wrong {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+  }
+  #progress {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: black;
+    border: 2px solid orange;
+    border-radius: 10px;
+    padding: 10px 15px;
+    font-size: 18px;
+    user-select: none;
+  }
+  #popupOverlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right:0; bottom: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+  }
+  #popup {
+    background: black;
+    border: 3px solid orange;
+    border-radius: 15px;
+    padding: 30px 40px;
+    color: orange;
+    font-size: 28px;
+    text-align: center;
+    max-width: 300px;
+  }
+  #popup button {
+    margin-top: 25px;
+    background: orange;
+    border: none;
+    color: black;
+    font-size: 20px;
+    padding: 10px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  #popup button:hover {
+    background: #cc7a00;
+  }
+  #developer {
+    margin: 0 auto 20px auto;
+    max-width: 120px;
+    border-radius: 50%;
+    border: 2px solid orange;
+    display: block;
+  }
+  #flashOverlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: orange;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 900;
+    transition: opacity 0.3s ease;
+  }
+</style>
 </head>
 <body>
 
-<div class="screen active" id="homeScreen">
-  <div class="photo-row">
-    <img src="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg">
-    <img src="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg">
-    <img src="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg">
+<div id="progress">Question 0 / 15</div>
+
+<div id="gameContainer">
+  <div id="questionBox">
+    <div id="questionText"></div>
+    <div id="translation"></div>
   </div>
-  <h1>Who Wants to Be a Millionaire?</h1>
-  <button class="start-btn" id="startBtn">Start Game</button>
+  <div class="options" id="optionsContainer"></div>
 </div>
 
-<div class="screen" id="questionScreen">
-  <div class="progress-container">
-    <div class="progress-bar" id="progressBar"></div>
+<img id="developer" src="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg" alt="Developer Photo" />
+
+<div id="popupOverlay">
+  <div id="popup">
+    <div>Wrong Answer</div>
+    <button id="popupBtn">Go to Home</button>
   </div>
-  <div id="questionText"></div>
-  <div id="translation"></div
+</div>
+
+<div id="flashOverlay"></div>
+
+<script>
+// Karachi related questions with English and Sindhi translations
+const questions = [
+  {
+    q: "What is the largest city in Pakistan?",
+    t: "پاڪستان جو سڀ کان وڏو شهر ڪهڙو آهي؟",
+    options: ["Karachi", "Lahore", "Islamabad", "Quetta"],
+    answer: 0
+  },
+  {
+    q: "Which sea borders Karachi?",
+    t: "ڪراچي جي ڪهڙي سمنڊ سان سرحد آهي؟",
+    options: ["Arabian Sea", "Red Sea", "Baltic Sea", "Black Sea"],
+    answer: 0
+  },
+  {
+    q: "What is the name of Karachi's main airport?",
+    t: "ڪراچي جو مکيه هوائي اڏي جو نالو ڇا آهي؟",
+    options: ["Jinnah International Airport", "Heathrow Airport", "Benazir Bhutto Airport", "Allama Iqbal Airport"],
+    answer: 0
+  },
+  {
+    q: "Karachi is located in which province?",
+    t: "ڪراچي ڪهڙي صوبي ۾ واقع آهي؟",
+    options: ["Sindh", "Punjab", "Balochistan", "Khyber Pakhtunkhwa"],
+    answer: 0
+  },
+  {
+    q: "Which famous market is located in Karachi?",
+    t: "ڪهڙو مشهور بازار ڪراچي ۾ آهي؟",
+    options: ["Empress Market", "Anarkali Bazaar", "Liberty Market", "Zainab Market"],
+    answer: 0
+  },
+  {
+    q: "Which river flows near Karachi?",
+    t: "ڪراچي جي ويجهو ڪهڙي درياهه وهندي آهي؟",
+    options: ["Lyari River", "Indus River", "Chenab River", "Jhelum River"],
+    answer: 0
+  },
+  {
+    q: "What is Karachi's famous beach?",
+    t: "ڪراچي جو مشهور ساحل ڪهڙو آهي؟",
+    options: ["Clifton Beach", "French Beach", "Hawke's Bay", "Sandspit Beach"],
+    answer: 0
+  },
+  {
+    q: "When is Karachi's Independence Day celebrated?",
+    t: "ڪراچي ۾ آزادي جو ڏينهن ڪڏهن ملهائبو آهي؟",
+    options: ["14 August", "23 March", "25 December", "1 May"],
+    answer: 0
+  },
+  {
+    q: "What is the official language spoken in Karachi?",
+    t: "ڪراچي ۾ سرڪاري ٻولي ڪهڙي آهي؟",
+    options: ["Urdu", "Sindhi", "Punjabi", "Balochi"],
+    answer: 0
+  },
+  {
+    q: "Which sport is most popular in Karachi?",
+    t: "ڪراچي ۾ سڀ کان مشهور راند ڪهڙي آهي؟",
+    options: ["Cricket", "Football", "Hockey", "Squash"],
+    answer: 0
+  }
+];
+
+// Pick 15 random unique questions from above (or if <15, just repeat until 15)
+function pickQuestions(num) {
+  let picked = [];
+  let copy = [...questions];
+  while(picked.length < num) {
+    if (copy.length === 0) copy = [...questions];
+    const idx = Math.floor(Math.random() * copy.length);
+    picked.push(copy.splice(idx,1)[0]);
+  }
+  return picked;
+}
+
+const totalQuestions = 15;
+const quizQuestions = pickQuestions(totalQuestions);
+let currentIndex = 0;
+let acceptingAnswers = true;
+
+const questionText = document.getElementById('questionText');
+const translationText = document.getElementById('translation');
+const optionsContainer = document.getElementById('optionsContainer');
+const progressText = document.getElementById('progress');
+const popupOverlay = document.getElementById('popupOverlay');
+const popupBtn = document.getElementById('popupBtn');
+const flashOverlay = document.getElementById('flashOverlay');
+
+function speak(text) {
+  if (!window.speechSynthesis) return;
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'ur-PK';
+  speechSynthesis.speak(utter);
+}
+
+function showQuestion() {
+  acceptingAnswers = true;
+  const q = quizQuestions[currentIndex];
+  questionText.textContent = q.q;
+  translationText.textContent = q.t;
+
+  // Clear old options
+  optionsContainer.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const div = document.createElement('div');
+    div.classList.add('option');
+    div.textContent = opt;
+    div.dataset.index = i;
+    optionsContainer.appendChild(div);
+  });
+
+  progressText.textContent = `Question ${currentIndex + 1} / ${totalQuestions}`;
+}
+
+function flashScreen() {
+  flashOverlay.style.opacity = '0.7';
+  setTimeout(() => {
+    flashOverlay.style.opacity = '0';
+  }, 300);
+}
+
+function handleAnswerClick(e) {
+  if (!acceptingAnswers) return;
+  const selected = e.target;
+  if (!selected.classList.contains('option')) return;
+
+  acceptingAnswers = false;
+  const selectedIndex = Number(selected.dataset.index);
+  const correctIndex = quizQuestions[currentIndex].answer;
+
+  if (selectedIndex === correctIndex) {
+    selected.classList.add('correct');
+    speak('Sahi jawab!');
+    flashScreen();
+    setTimeout(() => {
+      currentIndex++;
+      if (currentIndex >= totalQuestions) {
+        alert('Quiz complete! Well done.');
+        resetGame();
+      } else {
+        showQuestion();
+      }
+    }, 500);
+  } else {
+    selected.classList.add('wrong');
+    speak('Oh! Jawab ghalat hai.');
+    popupOverlay.style.display = 'flex';
+
+    // Disable all options visually
+    document.querySelectorAll('.option').forEach(opt => {
+      opt.classList.add('disabled');
+    });
+  }
+}
+
+function resetGame() {
+  currentIndex = 0;
+  popupOverlay.style.display = 'none';
+  showQuestion();
+}
+
+optionsContainer.addEventListener('click', handleAnswerClick);
+popupBtn.addEventListener('click', () => {
+  popupOverlay.style.display = 'none';
+  resetGame();
+});
+
+showQuestion();
+
+</script>
+</body>
+</html>
