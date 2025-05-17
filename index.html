@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ur">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Kaun Banega Crorepati – Karachi Edition</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Who Wants to Be a Millionaire – Karachi Edition</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -11,7 +11,6 @@
       color: #fff;
       margin: 0;
       padding: 0;
-      direction: rtl;
     }
     .container {
       max-width: 700px;
@@ -20,6 +19,7 @@
       padding: 30px;
       border-radius: 10px;
       box-shadow: 0 0 10px #000;
+      position: relative;
     }
     h1 {
       text-align: center;
@@ -64,25 +64,73 @@
       font-size: 0.9em;
       color: #aaa;
     }
+    #start-button {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      font-size: 1.2em;
+      background-color: #28a745;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #wrong-screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 0, 0, 0.8);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2em;
+      z-index: 10;
+      display: none;
+    }
+    .developer-info {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      text-align: center;
+    }
+    .developer-info img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+    }
+    .developer-info p {
+      margin: 5px 0 0;
+      font-size: 0.9em;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Kaun Banega Crorepati – Karachi Edition</h1>
-    <div id="quiz-box">
-      <p id="question">Sawal yahan nazar aayega</p>
+    <div class="developer-info">
+      <img src="https://www.example.com/abdul-salam-thahim.jpg" alt="Abdul Salam Thahim">
+      <p>Developer Abdul Salam Thahim</p>
+    </div>
+    <h1>Who Wants to Be a Millionaire – Karachi Edition</h1>
+    <button id="start-button">Start Game</button>
+    <div id="quiz-box" class="hidden">
+      <p id="question">Question will appear here</p>
       <div id="options"></div>
       <p id="feedback"></p>
       <p id="score">Score: 0</p>
     </div>
     <div id="result-box" class="hidden">
-      <h2>Game Khatam Ho Gayi!</h2>
+      <h2>Game Over!</h2>
       <p id="final-score"></p>
-      <button onclick="startQuiz()">Dobara Khelain</button>
+      <button onclick="startQuiz()">Play Again</button>
     </div>
+    <div id="wrong-screen">Wrong Answer!</div>
   </div>
   <footer>
-    Tayyar Kardah: Abdul Salam Thahim
+    Developed by Abdul Salam Thahim
   </footer>
   <audio id="bg-music" loop>
     <source src="quiz_background_music.mp3" type="audio/mpeg">
@@ -99,77 +147,77 @@
   <script>
     const questions = [
       {
-        question: "Karachi ka sabse bara bazar kaunsa hai?",
+        question: "What is the largest market in Karachi?",
         options: ["Tariq Road", "Zainab Market", "Saddar", "Empress Market"],
         answer: "Empress Market"
       },
       {
-        question: "Pakistan ka qaumi khel kya hai?",
+        question: "What is the national sport of Pakistan?",
         options: ["Cricket", "Hockey", "Squash", "Football"],
         answer: "Hockey"
       },
       {
-        question: "Quaid-e-Azam ka mazar kis sheher mein hai?",
+        question: "Where is the mausoleum of Quaid-e-Azam located?",
         options: ["Lahore", "Islamabad", "Karachi", "Peshawar"],
         answer: "Karachi"
       },
       {
-        question: "Karachi ka mashhoor beach kaunsa hai?",
+        question: "Which is a famous beach in Karachi?",
         options: ["Clifton", "Hawke's Bay", "Sandspit", "Manora"],
         answer: "Clifton"
       },
       {
-        question: "Pakistan ki currency ka unit kya hai?",
+        question: "What is the unit of Pakistan's currency?",
         options: ["Rupee", "Dollar", "Taka", "Dinar"],
         answer: "Rupee"
       },
       {
-        question: "Karachi mein sabse mashhoor university kaunsi hai?",
+        question: "Which is a renowned university in Karachi?",
         options: ["Punjab University", "Karachi University", "LUMS", "NUST"],
         answer: "Karachi University"
       },
       {
-        question: "Pakistan ka sabse lamba darya kaunsa hai?",
+        question: "Which is the longest river in Pakistan?",
         options: ["Chenab", "Jhelum", "Indus", "Ravi"],
         answer: "Indus"
       },
       {
-        question: "Karachi ka mashhoor mausam kaunsa hai?",
-        options: ["Sardiyan", "Garmiyan", "Barsaat", "Har mausam"],
-        answer: "Garmiyan"
+        question: "What is the typical weather in Karachi?",
+        options: ["Winter", "Summer", "Rainy", "All seasons"],
+        answer: "Summer"
       },
       {
-        question: "Pakistan ka qaumi phool kya hai?",
+        question: "What is the national flower of Pakistan?",
         options: ["Rose", "Jasmine", "Sunflower", "Lily"],
         answer: "Jasmine"
       },
       {
-        question: "Karachi ka sabse purana ilaqa kaunsa hai?",
+        question: "Which is the oldest area in Karachi?",
         options: ["Defence", "Clifton", "Saddar", "Gulshan"],
         answer: "Saddar"
       },
       {
-        question: "Pakistan ki qaumi zaban kya hai?",
+        question: "What is the national language of Pakistan?",
         options: ["Punjabi", "Sindhi", "Urdu", "English"],
         answer: "Urdu"
       },
       {
-        question: "Karachi ka mashhoor food item kaunsa hai?",
+        question: "Which is a famous food item in Karachi?",
         options: ["Biryani", "Pizza", "Burger", "Pasta"],
         answer: "Biryani"
       },
       {
-        question: "Pakistan ka independence day kab hai?",
+        question: "When is Pakistan's Independence Day?",
         options: ["14 August", "15 August", "23 March", "25 December"],
         answer: "14 August"
       },
       {
-        question: "Karachi ka sabse mashhoor park kaunsa hai?",
+        question: "Which is a popular park in Karachi?",
         options: ["Hill Park", "Safari Park", "Bagh-e-Jinnah", "Aladdin Park"],
         answer: "Bagh-e-Jinnah"
       },
       {
-        question: "Pakistan ka qaumi janwar kya hai?",
+        question: "What is the national animal of Pakistan?",
         options: ["Lion", "Markhor", "Tiger", "Elephant"],
         answer: "Markhor"
       }
@@ -183,6 +231,10 @@
     const correctSound = document.getElementById('correct-sound');
     const wrongSound = document.getElementById('wrong-sound');
     const gameoverSound = document.getElementById('gameover-sound');
+    const startButton = document.getElementById('start-button');
+    const quizBox = document.getElementById('quiz-box');
+    const resultBox = document.getElementById('result-box');
+    const wrongScreen = document.getElementById('wrong-screen');
 
     function getRandomQuestions(array, num) {
       const shuffled = array.sort(() => 0.5 - Math.random());
@@ -193,44 +245,4 @@
       selectedQuestions = getRandomQuestions(questions, 15);
       currentQuestionIndex = 0;
       score = 0;
-      document.getElementById('quiz-box').classList.remove('hidden');
-      document.getElementById('result-box').classList.add('hidden');
-      showQuestion();
-      bgMusic.play();
-    }
-
-    function showQuestion() {
-      const questionObj = selectedQuestions[currentQuestionIndex];
-      document.getElementById('question').textContent = questionObj.question;
-      const optionsDiv = document.getElementById('options');
-      optionsDiv.innerHTML = '';
-      questionObj.options.forEach(option => {
-        const btn = document.createElement('button');
-        btn.textContent = option;
-        btn.onclick = () => checkAnswer(btn, option);
-        optionsDiv.appendChild(btn);
-      });
-      document.getElementById('feedback').textContent = '';
-      document.getElementById('score').textContent = `Score: ${score}`;
-    }
-
-    function checkAnswer(button, selectedOption) {
-      const questionObj = selectedQuestions[currentQuestionIndex];
-      const buttons = document.querySelectorAll('#options button');
-      buttons.forEach(btn => btn.disabled = true);
-      if (selectedOption === questionObj.answer) {
-        score += 10;
-        button.style.backgroundColor = 'green';
-        correctSound.play();
-        setTimeout(() => {
-          currentQuestionIndex++;
-          if (currentQuestionIndex < selectedQuestions.length) {
-            showQuestion();
-          } else {
-            endQuiz();
-          }
-        }, 1000);
-      } else {
-        button.style
-::contentReference[oaicite:32]{index=32}
- 
+      quiz
