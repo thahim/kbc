@@ -26,6 +26,7 @@
       font-size: 1.2rem;
       cursor: pointer;
       margin: 10px;
+      text-align: left; /* so Sindhi appears neatly under English */
     }
     .profile {
       border-radius: 50%;
@@ -34,7 +35,6 @@
       display: block;
       border: 5px solid orange;
     }
-    /* QUIZ LAYOUT */
     #quiz .container {
       display: flex;
       flex-direction: column;
@@ -47,8 +47,10 @@
       padding: 20px;
       font-size: 1.5rem;
       margin-bottom: 15px;
+      text-align: left;
     }
-    .sindhi {
+    .question-box .sindhi,
+    .answers-grid .sindhi {
       font-size: 1rem;
       color: #aaa;
       margin-top: 5px;
@@ -57,13 +59,6 @@
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 15px;
-    }
-    .answers-grid button {
-      background: #000;
-      border: 3px solid orange;
-      padding: 20px;
-      font-size: 1.2rem;
-      color: #fff;
     }
     .progress-bar {
       position: absolute;
@@ -105,7 +100,7 @@
     <div class="container">
       <div class="question-box">
         <div id="questionText"></div>
-        <div id="questionSindhi" class="sindhi"></div>
+        <div id="questionSindhi" class="sindhi" aria-hidden="true"></div>
       </div>
       <div class="answers-grid" id="answers"></div>
     </div>
@@ -122,35 +117,37 @@
   </div>
 
   <script>
-    // ─── All 50 Karachi questions embedded here ─────────────────────────────
+    // ─── 25 Karachi questions with Sindhi ────────────────────────────
     const allQuestions = [
       {
         question: "What is the tallest building in Karachi?",
-        sindhi: "ڪراچيءَ ۾ سڀ کان اوچو عمارت ڪهڙو آهي؟",
+        sindhiQuestion: "ڪراچيءَ ۾ سڀ کان اوچو عمارت ڪهڙو آهي؟",
         answers: [
-          { text: "Bahria Icon Tower", correct: true },
-          { text: "MCB Tower", correct: false },
-          { text: "Habib Bank Plaza", correct: false },
-          { text: "Dolmen Tower", correct: false }
+          { text: "Bahria Icon Tower", sindhi: "بحريه آئڪن ٽاور", correct: true },
+          { text: "MCB Tower", sindhi: "ايم سي بي ٽاور", correct: false },
+          { text: "Habib Bank Plaza", sindhi: "حبيب بئنڪ پلازا", correct: false },
+          { text: "Dolmen Tower", sindhi: "ڊولمن ٽاور", correct: false }
         ]
       },
       {
         question: "Which beach is located in Karachi?",
-        sindhi: "ڪراچيءَ ۾ ڪهڙو سمنڊ آهي؟",
+        sindhiQuestion: "ڪراچيءَ ۾ ڪهڙو ساحل آهي؟",
         answers: [
-          { text: "Clifton Beach", correct: true },
-          { text: "Hawke's Bay", correct: false },
-          { text: "Seaview", correct: false },
-          { text: "All of the above", correct: false }
+          { text: "Clifton Beach", sindhi: "ڪلفٽن ساحل", correct: true },
+          { text: "Hawke's Bay", sindhi: "هاڪس بے", correct: false },
+          { text: "French Beach", sindhi: "فرينچ ساحل", correct: false },
+          { text: "Sandspit Beach", sindhi: "سينڊ اسپٽ ساحل", correct: false }
         ]
       },
-      /* … add the remaining 48 questions here … */
+      /* … add remaining 23 questions here, each with
+           question, sindhiQuestion,
+           and answers[] with {text, sindhi, correct} … */
     ];
 
     let questions = [], current = 0;
 
     function startGame() {
-      questions = shuffle(allQuestions).slice(0, 15);
+      questions = shuffle(allQuestions).slice(0, 25);
       current = 0;
       swapScreen("home", "quiz");
       showQuestion();
@@ -159,16 +156,33 @@
     function showQuestion() {
       const q = questions[current];
       document.getElementById("questionText").textContent = q.question;
-      document.getElementById("questionSindhi").textContent = q.sindhi;
+      const qSindhi = document.getElementById("questionSindhi");
+      qSindhi.textContent = q.sindhiQuestion;
+      qSindhi.setAttribute("aria-hidden", "true");
+
       const grid = document.getElementById("answers");
       grid.innerHTML = "";
       shuffle(q.answers).forEach(a => {
         const btn = document.createElement("button");
-        btn.textContent = a.text;
+        // English part (read by TTS)
+        const en = document.createElement("div");
+        en.textContent = a.text;
+
+        // Sindhi part (hidden from TTS)
+        const si = document.createElement("div");
+        si.textContent = a.sindhi;
+        si.className = "sindhi";
+        si.setAttribute("aria-hidden", "true");
+
+        btn.appendChild(en);
+        btn.appendChild(si);
         btn.onclick = () => checkAnswer(a.correct);
         grid.appendChild(btn);
       });
+
       updateProgress();
+      // Read only the English question
+      speak(q.question);
     }
 
     function checkAnswer(isCorrect) {
@@ -205,12 +219,12 @@
 
     function updateProgress() {
       const bar = document.getElementById("progress");
-      bar.style.height = ((current + 1) / 15 * 100) + "%";
+      bar.style.height = ((current + 1) / 25 * 100) + "%";
     }
 
     function speak(text, callback) {
       const msg = new SpeechSynthesisUtterance(text);
-      msg.lang = "en-GB"; // better cross-browser support
+      msg.lang = "en-GB";
       msg.onend = () => callback && callback();
       speechSynthesis.cancel();
       speechSynthesis.speak(msg);
