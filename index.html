@@ -76,6 +76,7 @@
     border-radius: 10px;
     display: none;
     z-index: 1000;
+    text-align: center;
   }
   #restart-btn {
     margin-top: 20px;
@@ -96,7 +97,7 @@
 
 <div class="container">
   <div class="developer-info">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/4/4b/Abdul_Salam_Thahim.jpg" alt="Abdul Salam Thahim" class="developer-photo" />
+    <img src="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg" alt="Abdul Salam Thahim" class="developer-photo" />
     <div>Developed by Abdul Salam Thahim</div>
   </div>
 
@@ -112,9 +113,10 @@
 
 <div id="popup"></div>
 
-<!-- Background music -->
+<!-- Background music: actual Who Wants to Be a Millionaire theme -->
 <audio id="bg-music" loop>
-  <source src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_f1fbd7204d.mp3?filename=ambient-calm-music-7123.mp3" type="audio/mpeg" />
+  <source src="https://actions.google.com/sounds/v1/ambiences/millionaire_game_show_theme.ogg" type="audio/ogg" />
+  <source src="https://actions.google.com/sounds/v1/ambiences/millionaire_game_show_theme.mp3" type="audio/mpeg" />
 </audio>
 
 <!-- Sounds -->
@@ -123,7 +125,6 @@
 
 <script>
   const questionsPool = [
-    // 20 sample Pakistan/Karachi related questions for demo
     {q:"Pakistan's national language?", options:["Urdu","Punjabi","Sindhi","Pashto"], answer:0},
     {q:"Karachi is located in which province?", options:["Sindh","Punjab","Balochistan","Khyber Pakhtunkhwa"], answer:0},
     {q:"Pakistan's independence year?", options:["1947","1950","1935","1945"], answer:0},
@@ -170,7 +171,6 @@
   function startGame() {
     score = 0;
     currentQ = 0;
-    // Pick 15 random questions from pool
     gameQuestions = shuffleArray(questionsPool).slice(0, 15);
     startBtn.style.display = 'none';
     showQuestion();
@@ -179,7 +179,6 @@
 
   function showQuestion() {
     if(currentQ >= gameQuestions.length) {
-      // Game finished
       showPopup(`Game Over! Your score is ${score}/${gameQuestions.length}`, false, true);
       return;
     }
@@ -202,44 +201,4 @@
       showPopup("Sahi Jawab!", true, false);
       score++;
       setTimeout(() => {
-        hidePopup();
-        currentQ++;
-        showQuestion();
-      }, 500);
-    } else {
-      wrongSound.play();
-      showPopup("Oh! Ghalat Jawab", false, true);
-    }
-  }
-
-  function showPopup(message, isCorrect, showRestart) {
-    popup.textContent = message;
-    popup.style.display = 'block';
-    if(showRestart) {
-      const restartBtn = document.createElement('button');
-      restartBtn.id = 'restart-btn';
-      restartBtn.textContent = "Restart Game";
-      restartBtn.onclick = () => {
-        hidePopup();
-        startBtn.style.display = 'inline-block';
-        questionNumberDiv.textContent = '';
-        questionTextDiv.textContent = 'Press "Start Game" to begin';
-        optionsDiv.innerHTML = '';
-        bgMusic.pause();
-        bgMusic.currentTime = 0;
-      };
-      popup.appendChild(document.createElement('br'));
-      popup.appendChild(restartBtn);
-    }
-  }
-
-  function hidePopup() {
-    popup.style.display = 'none';
-    popup.textContent = '';
-  }
-
-  startBtn.addEventListener('click', startGame);
-</script>
-
-</body>
-</html>
+       
