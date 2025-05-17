@@ -6,7 +6,93 @@
   <meta name="description" content="Kair Thindo Crorepati - A Karachi quiz game in Sindhi Roman"/>
   <meta name="author" content="Abdul Salam Thahim" />
   <title>Kair Thindo Crorepati?</title>
-  <link rel="stylesheet" href="style.css"/>
+
+  <!-- INLINE CSS -->
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0c1b30;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .header, .footer {
+      background-color: #061222;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .developer-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .developer-info img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid #4e9eff;
+    }
+
+    .developer-info span {
+      font-weight: bold;
+      color: #4e9eff;
+    }
+
+    .game-area {
+      flex: 1;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .game-title {
+      font-size: 2.2rem;
+      color: #4e9eff;
+      margin-bottom: 30px;
+    }
+
+    button {
+      background-color: #4e9eff;
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      font-size: 1rem;
+      border-radius: 10px;
+      margin: 10px;
+      cursor: pointer;
+      box-shadow: 0 0 10px #4e9eff88;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #3588cc;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .question-box {
+      background: #112b48;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-size: 1.2rem;
+      box-shadow: 0 0 15px #4e9eff33;
+    }
+
+    .answers button {
+      display: block;
+      width: 80%;
+      margin: 10px auto;
+    }
+  </style>
 </head>
 <body>
   <header class="header">
@@ -35,45 +121,30 @@
     </div>
   </footer>
 
+  <!-- INLINE JS -->
   <script>
     // Load sounds
-    const startSound = new Audio('assets/sounds/start.mp3');
+    const startSound   = new Audio('assets/sounds/start.mp3');
     const correctSound = new Audio('assets/sounds/correct.mp3');
-    const wrongSound = new Audio('assets/sounds/wrong.mp3');
-    const nextSound = new Audio('assets/sounds/next.mp3');
+    const wrongSound   = new Audio('assets/sounds/wrong.mp3');
+    const nextSound    = new Audio('assets/sounds/next.mp3');
 
     const allQuestions = [
-      {
-        question: "Karachi ka sab se purana area kaunsa hai?",
-        answers: ["Lyari", "Defence", "Clifton", "Gulshan"],
-        correct: "Lyari"
-      },
-      {
-        question: "Karachi ki mashhoor market ka naam kya hai?",
-        answers: ["Empress Market", "City Mall", "Zainab Market", "Meena Bazaar"],
-        correct: "Empress Market"
-      },
-      {
-        question: "Karachi ka sab se bara stadium?",
-        answers: ["National Stadium", "Asghar Ali Shah", "KMC Ground", "Karachi Gymkhana"],
-        correct: "National Stadium"
-      },
-      {
-        question: "Karachi ka airport ka naam kya hai?",
-        answers: ["Jinnah International", "Karachi International", "Iqbal Airport", "Sindh Airbase"],
-        correct: "Jinnah International"
-      }
-      // Add more questions up to 5000
+      { question: "Karachi ka sab se purana area kaunsa hai?", answers: ["Lyari", "Defence", "Clifton", "Gulshan"], correct: "Lyari" },
+      { question: "Karachi ki mashhoor market ka naam kya hai?", answers: ["Empress Market", "City Mall", "Zainab Market", "Meena Bazaar"], correct: "Empress Market" },
+      { question: "Karachi ka sab se bara stadium?", answers: ["National Stadium", "Asghar Ali Shah", "KMC Ground", "Karachi Gymkhana"], correct: "National Stadium" },
+      { question: "Karachi ka airport ka naam kya hai?", answers: ["Jinnah International", "Karachi International", "Iqbal Airport", "Sindh Airbase"], correct: "Jinnah International" }
+      // ...extend up to 5000 questions
     ];
 
     let currentQuestions = [];
-    let currentIndex = 0;
+    let currentIndex     = 0;
 
-    const startBtn = document.getElementById("startGameBtn");
+    const startBtn         = document.getElementById("startGameBtn");
     const questionContainer = document.getElementById("questionContainer");
-    const questionEl = document.getElementById("question");
-    const answersEl = document.getElementById("answers");
-    const nextBtn = document.getElementById("nextBtn");
+    const questionEl       = document.getElementById("question");
+    const answersEl        = document.getElementById("answers");
+    const nextBtn          = document.getElementById("nextBtn");
 
     startBtn.addEventListener("click", startGame);
     nextBtn.addEventListener("click", showNextQuestion);
