@@ -3,443 +3,311 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Kaun Banega Crorepati - Karachi Quiz</title>
+<title>KBC Karachi Quiz - Urdu TTS & Reset on Wrong</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
   body {
-    margin: 0; background: #0a1a3a; color: #eef3f7;
-    font-family: 'Fredoka One', cursive;
+    margin: 0; padding: 0; background: #001f4d; color: white;
+    font-family: 'Fredoka One', cursive, Arial, sans-serif;
     display: flex; flex-direction: column; min-height: 100vh;
   }
-  header {
-    background: #142a6d;
-    padding: 10px 20px;
-    display: flex; align-items: center; gap: 15px;
-    box-shadow: 0 0 10px #112244aa;
+  #homeScreen, #questionScreen {
+    flex-grow: 1;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center;
+    padding: 20px;
   }
-  header img {
-    width: 50px; height: 50px;
+  #homeScreen h2 {
+    margin-bottom: 12px;
+  }
+  #homeScreen img {
     border-radius: 50%;
-    border: 2px solid #eef3f7;
+    width: 140px; height: 140px;
+    border: 4px solid white;
+    margin-bottom: 24px;
+    object-fit: cover;
   }
-  header .developer {
-    font-size: 18px;
+  button#startGameBtn {
+    padding: 16px 32px;
+    font-size: 22px;
+    border-radius: 30px;
+    border: none;
+    background-color: #ff6600;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
     font-weight: bold;
   }
-  main {
-    flex: 1;
-    padding: 20px;
-    max-width: 900px;
-    margin: 0 auto;
+  button#startGameBtn:hover {
+    background-color: #e65c00;
   }
-  #startScreen, #questionScreen, #resultOverlay {
+  #questionScreen {
     display: none;
-  }
-  #startScreen.active, #questionScreen.active, #resultOverlay.active {
-    display: block;
-  }
-  #startBtn {
-    background: #3058a5;
-    border: none;
-    padding: 15px 30px;
-    font-size: 24px;
-    color: #eef3f7;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-  #startBtn:hover {
-    background: #4a77d4;
+    max-width: 650px;
+    margin: 0 auto;
+    width: 100%;
   }
   #questionNumber {
-    font-size: 20px;
+    font-size: 24px;
     margin-bottom: 10px;
+    text-align: right;
   }
-  #questionText {
-    font-size: 28px;
-    margin-bottom: 8px;
-    min-height: 80px;
+  #questionWrapper {
+    position: relative;
+    margin-bottom: 30px;
+    height: 140px;
   }
-  #questionSindhi {
+  #questionBackground {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    clip-path: polygon(0 0, 100% 0, 0 100%);
+    background: black;
+    border: 3.5px solid #ff6600;
+    z-index: 0;
+  }
+  #questionText, #sindhiTranslation {
+    position: relative;
+    z-index: 1;
+    padding: 20px 25px 25px 30px;
     font-size: 22px;
-    font-style: italic;
-    color: #a3b4c4;
-    margin-bottom: 20px;
+    font-weight: bold;
+    line-height: 1.3;
   }
-  #answers {
+  #sindhiTranslation {
+    color: #ffb366;
+    margin-top: 8px;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  #optionsContainer {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
   }
-  .answerBtn {
-    background: #1f3a8a;
-    border: none;
-    padding: 15px;
-    font-size: 20px;
-    color: #eef3f7;
-    border-radius: 8px;
+  #optionsContainer button {
+    background: black;
+    border: 4px solid #ff6600;
+    border-radius: 18px;
+    padding: 18px 15px;
+    color: white;
+    font-size: 18px;
     cursor: pointer;
-    transition: background 0.3s ease;
-    min-height: 60px;
-  }
-  .answerBtn:hover {
-    background: #3a5ed9;
-  }
-  #resultOverlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(10, 26, 58, 0.95);
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-size: 36px;
+    font-weight: 600;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+  }
+  #optionsContainer button:hover {
+    background-color: #ff6600;
+    color: black;
+    border-color: black;
+  }
+  .ans-en {
     font-weight: bold;
-    color: #ff6161;
-    z-index: 999;
+    font-size: 19px;
+    margin-bottom: 6px;
+  }
+  .ans-sd {
+    font-size: 17px;
+    color: #ffb366;
+    font-weight: 600;
+    font-family: 'Noto Nastaliq Urdu', serif;
+  }
+  #progressBarContainer {
+    position: fixed;
+    top: 0; right: 0;
+    width: 35px;
+    height: 100vh;
+    background: #003366;
+    border-radius: 15px 0 0 15px;
+    overflow: hidden;
+    box-shadow: inset 0 0 10px #ff6600;
+  }
+  #progressBarFill {
+    background: #ff6600;
+    width: 100%;
+    height: 0%;
+    transition: height 0.4s ease;
+  }
+  #popup {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: #000;
+    border: 3.5px solid #ff6600;
+    border-radius: 15px;
+    padding: 25px 40px;
+    color: #ff6600;
+    font-size: 28px;
+    display: none;
+    z-index: 1000;
     text-align: center;
-    padding: 30px;
-  }
-  #resultOverlay.correct {
-    color: #6be56b;
-  }
-  #resultOverlay button {
-    margin-top: 25px;
-    padding: 12px 30px;
-    font-size: 22px;
-    background: #3058a5;
-    border: none;
-    border-radius: 10px;
-    color: #eef3f7;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-  #resultOverlay button:hover {
-    background: #4a77d4;
-  }
-  footer {
-    text-align: center;
-    padding: 10px;
-    font-size: 14px;
-    color: #8aa2c1;
+    box-shadow: 0 0 20px #ff6600;
+    font-weight: 700;
+    font-family: 'Fredoka One', cursive;
   }
 </style>
 </head>
 <body>
-<header>
+
+<div id="homeScreen">
+  <h2>Developed by Abdul Salam Thahim</h2>
   <img src="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg" alt="Developer Photo" />
-  <div class="developer">Developed by Abdul Salam Thahim</div>
-</header>
-<main>
-  <section id="startScreen" class="active">
-    <h1>Kaun Banega Crorepati? - Karachi Quiz</h1>
-    <button id="startBtn">Start Game</button>
-  </section>
+  <button id="startGameBtn">Start Game</button>
+</div>
 
-  <section id="questionScreen">
-    <div id="questionNumber"></div>
+<div id="questionScreen">
+  <div id="questionNumber"></div>
+  <div id="questionWrapper">
+    <div id="questionBackground"></div>
     <div id="questionText"></div>
-    <div id="questionSindhi"></div>
-    <div id="answers"></div>
-  </section>
+    <div id="sindhiTranslation"></div>
+  </div>
+  <div id="optionsContainer"></div>
+</div>
 
-  <section id="resultOverlay"></section>
-</main>
+<div id="progressBarContainer">
+  <div id="progressBarFill"></div>
+</div>
 
-<footer>
-  &copy; 2025 Abdul Salam Thahim | Karachi Quiz Game
-</footer>
+<div id="popup"></div>
 
 <script>
-(() => {
-  const allQuestions = [
-    {
-      question: "What is the largest district in Karachi?",
-      questionSindhi: "ڪراچي ۾ سڀ کان وڏو ضلعو ڪهڙو آهي؟",
-      answers: [
-        { text: "Malir", sindhi: "مالير", correct: true },
-        { text: "Korangi", sindhi: "ڪورنگي", correct: false },
-        { text: "Central", sindhi: "سنٽرل", correct: false },
-        { text: "East", sindhi: "اوڀر", correct: false }
-      ]
+  const questions = [
+    { 
+      q: "What is the official language of Karachi?", 
+      sindhi: "ڪراچي جي سرڪاري ٻولي ڇا آهي؟", 
+      options: [
+        {en: "Sindhi", sd: "سنڌي"}, 
+        {en: "Urdu", sd: "اردو"}, 
+        {en: "Punjabi", sd: "پنجابي"}, 
+        {en: "English", sd: "انگريزي"}
+      ], 
+      answer: 1 
     },
-    {
-      question: "Which sea borders Karachi?",
-      questionSindhi: "ڪهڙو سمنڊ ڪراچي کي گهيريل آهي؟",
-      answers: [
-        { text: "Arabian Sea", sindhi: "عربي سمنڊ", correct: true },
-        { text: "Bay of Bengal", sindhi: "بنگال جو خليج", correct: false },
-        { text: "Red Sea", sindhi: "سرخ سمنڊ", correct: false },
-        { text: "Mediterranean Sea", sindhi: "مديٽرينين سمنڊ", correct: false }
-      ]
+    { 
+      q: "Which sea borders Karachi?", 
+      sindhi: "ڪراچي کي ڪهڙي سمنڊ سان لڳل آهي؟", 
+      options: [
+        {en: "Arabian Sea", sd: "عربي سمنڊ"}, 
+        {en: "Red Sea", sd: "ريڊ سمنڊ"}, 
+        {en: "Bay of Bengal", sd: "بنگال جو خليج"}, 
+        {en: "Mediterranean Sea", sd: "ميديٽيرينين سمنڊ"}
+      ], 
+      answer: 0 
     },
-    {
-      question: "What is Karachi's famous market?",
-      questionSindhi: "ڪراچي جو مشهور بازار ڪهڙو آهي؟",
-      answers: [
-        { text: "Empress Market", sindhi: "ايمپريس مارڪيٽ", correct: true },
-        { text: "Anarkali", sindhi: "انارڪلي", correct: false },
-        { text: "Liberty Market", sindhi: "لبريٽي مارڪيٽ", correct: false },
-        { text: "Zainab Market", sindhi: "زينب مارڪيٽ", correct: false }
-      ]
+    { 
+      q: "Karachi is the capital of which province?", 
+      sindhi: "ڪراچي ڪنهن صوبي جو گاديءَ جو هنڌ آهي؟", 
+      options: [
+        {en: "Balochistan", sd: "بلوچستان"}, 
+        {en: "Sindh", sd: "سندھ"}, 
+        {en: "Punjab", sd: "پنجاب"}, 
+        {en: "Khyber Pakhtunkhwa", sd: "خيبر پختونخوا"}
+      ], 
+      answer: 1 
     },
-    {
-      question: "When was Karachi founded?",
-      questionSindhi: "ڪراچي ڪڏهن ٺهيو؟",
-      answers: [
-        { text: "1729", sindhi: "1729", correct: true },
-        { text: "1857", sindhi: "1857", correct: false },
-        { text: "1900", sindhi: "1900", correct: false },
-        { text: "1947", sindhi: "1947", correct: false }
-      ]
-    },
-    {
-      question: "What is the main language spoken in Karachi?",
-      questionSindhi: "ڪراچي ۾ سڀ کان وڌيڪ ڪهڙي ٻولي ڳالهائي وڃي ٿي؟",
-      answers: [
-        { text: "Sindhi", sindhi: "سنڌي", correct: false },
-        { text: "Urdu", sindhi: "اردو", correct: true },
-        { text: "Punjabi", sindhi: "پنجابي", correct: false },
-        { text: "Pashto", sindhi: "پشتو", correct: false }
-      ]
-    },
-    {
-      question: "Which airport serves Karachi?",
-      questionSindhi: "ڪراچي جو هوائي اڏي جو نالو ڇا آهي؟",
-      answers: [
-        { text: "Jinnah International Airport", sindhi: "جنهن انٽرنيشنل ايئرپورٽ", correct: true },
-        { text: "Lahore Airport", sindhi: "لاهور ايئرپورٽ", correct: false },
-        { text: "Quetta Airport", sindhi: "ڪوئٽا ايئرپورٽ", correct: false },
-        { text: "Islamabad Airport", sindhi: "اسلام آباد ايئرپورٽ", correct: false }
-      ]
-    },
-    {
-      question: "Karachi is the capital of which province?",
-      questionSindhi: "ڪراچي ڪهڙي صوبي جي راڄڌاني آهي؟",
-      answers: [
-        { text: "Sindh", sindhi: "سنڌ", correct: true },
-        { text: "Punjab", sindhi: "پنجاب", correct: false },
-        { text: "Balochistan", sindhi: "بلوچستان", correct: false },
-        { text: "Khyber Pakhtunkhwa", sindhi: "خيبرا پختونخوا", correct: false }
-      ]
-    },
-    {
-      question: "What is the famous beach in Karachi?",
-      questionSindhi: "ڪراچي جو مشهور ساحل ڪهڙو آهي؟",
-      answers: [
-        { text: "Clifton Beach", sindhi: "ڪلِفٽن ساحل", correct: true },
-        { text: "French Beach", sindhi: "فرينچ ساحل", correct: false },
-        { text: "Hawksbay", sindhi: "هاڪس بي", correct: false },
-        { text: "Sandspit", sindhi: "سينڊ اسپاٽ", correct: false }
-      ]
-    },
-    {
-      question: "What currency is used in Karachi?",
-      questionSindhi: "ڪراچي ۾ ڪهڙي ڪرنسي استعمال ٿئي ٿي؟",
-      answers: [
-        { text: "Pakistani Rupee", sindhi: "پاڪستاني روپيو", correct: true },
-        { text: "US Dollar", sindhi: "آمريڪي ڊالر", correct: false },
-        { text: "Euro", sindhi: "يورپيو", correct: false },
-        { text: "Indian Rupee", sindhi: "هندي روپيو", correct: false }
-      ]
-    },
-    {
-      question: "Which sport is most popular in Karachi?",
-      questionSindhi: "ڪهڙو راند ڪراچي ۾ سڀ کان وڌيڪ مشهور آهي؟",
-      answers: [
-        { text: "Cricket", sindhi: "ڪرڪيٽ", correct: true },
-        { text: "Football", sindhi: "فٽبال", correct: false },
-        { text: "Hockey", sindhi: "هاڪي", correct: false },
-        { text: "Tennis", sindhi: "ٽينس", correct: false }
-      ]
-    },
-    {
-      question: "Which famous tower is in Karachi?",
-      questionSindhi: "ڪراچي ۾ ڪهڙو مشهور ٽاور آهي؟",
-      answers: [
-        { text: "Empress Market Tower", sindhi: "ايمپريس مارڪيٽ ٽاور", correct: false },
-        { text: "Habib Bank Plaza", sindhi: "حبيب بينڪ پلازا", correct: true },
-        { text: "Mazar-e-Quaid", sindhi: "مزار قائد", correct: false },
-        { text: "Karachi Tower", sindhi: "ڪراچي ٽاور", correct: false }
-      ]
-    },
-    {
-      question: "What is Karachi's nickname?",
-      questionSindhi: "ڪراچي جو عرفي نالو ڇا آهي؟",
-      answers: [
-        { text: "City of Lights", sindhi: "روشنيون وارو شهر", correct: true },
-        { text: "City of Gardens", sindhi: "باغن وارو شهر", correct: false },
-        { text: "City of Rivers", sindhi: "نهرن وارو شهر", correct: false },
-        { text: "City of Mountains", sindhi: "پهاڙن وارو شهر", correct: false }
-      ]
-    },
-    {
-      question: "Which major port is located in Karachi?",
-      questionSindhi: "ڪراچي ۾ ڪهڙو وڏو بندرگاهه آهي؟",
-      answers: [
-        { text: "Port of Karachi", sindhi: "ڪراچي بندرگاهه", correct: true },
-        { text: "Port Qasim", sindhi: "پورٽ قاسم", correct: false },
-        { text: "Gwadar Port", sindhi: "گوادر پورٽ", correct: false },
-        { text: "Bin Qasim Port", sindhi: "بن قاسم پورٽ", correct: false }
-      ]
-    },
-    {
-      question: "Which famous university is in Karachi?",
-      questionSindhi: "ڪراچي ۾ ڪهڙو مشهور يونيورسٽي آهي؟",
-      answers: [
-        { text: "University of Karachi", sindhi: "يونيورسٽي آف ڪراچي", correct: true },
-        { text: "Punjab University", sindhi: "پنجاب يونيورسٽي", correct: false },
-        { text: "NED University", sindhi: "اين اي ڊي يونيورسٽي", correct: false },
-        { text: "LUMS", sindhi: "لومز", correct: false }
-      ]
-    },
-    {
-      question: "What is the population range of Karachi?",
-      questionSindhi: "ڪراچي جي آبادي جو اندازو ڇا آهي؟",
-      answers: [
-        { text: "15-20 million", sindhi: "15-20 ملين", correct: true },
-        { text: "5-10 million", sindhi: "5-10 ملين", correct: false },
-        { text: "1-3 million", sindhi: "1-3 ملين", correct: false },
-        { text: "25-30 million", sindhi: "25-30 ملين", correct: false }
-      ]
+    { 
+      q: "What is Karachi famous for?", 
+      sindhi: "ڪراچي ۾ ڇا مشهور آهي؟", 
+      options: [
+        {en: "Films", sd: "فلمون"}, 
+        {en: "Industry", sd: "صنعت"}, 
+        {en: "Seafood", sd: "سمندري غذا"}, 
+        {en: "All of the above", sd: "تمام مٿي ڏنل"}
+      ], 
+      answer: 3 
     }
   ];
 
-  // Sound effects URLs
-  const correctSoundUrl = 'https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg';
-  const wrongSoundUrl = 'https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg';
-
-  const startScreen = document.getElementById('startScreen');
+  let currentQIndex = 0;
+  const homeScreen = document.getElementById('homeScreen');
   const questionScreen = document.getElementById('questionScreen');
-  const resultOverlay = document.getElementById('resultOverlay');
-  const startBtn = document.getElementById('startBtn');
-  const questionNumberEl = document.getElementById('questionNumber');
-  const questionTextEl = document.getElementById('questionText');
-  const questionSindhiEl = document.getElementById('questionSindhi');
-  const answersEl = document.getElementById('answers');
+  const questionNumber = document.getElementById('questionNumber');
+  const questionText = document.getElementById('questionText');
+  const sindhiTranslation = document.getElementById('sindhiTranslation');
+  const optionsContainer = document.getElementById('optionsContainer');
+  const progressBarFill = document.getElementById('progressBarFill');
+  const popup = document.getElementById('popup');
+  const startBtn = document.getElementById('startGameBtn');
 
-  let selectedQuestions = [];
-  let currentQuestionIndex = 0;
-  let correctAnswersCount = 0;
-
-  function shuffleArray(arr) {
-    for(let i = arr.length - 1; i > 0; i--){
-      const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-  }
-
-  function selectQuestions() {
-    const copy = [...allQuestions];
-    shuffleArray(copy);
-    selectedQuestions = copy.slice(0, 15);
-  }
-
-  function clearAnswers() {
-    answersEl.innerHTML = '';
-  }
-
-  function createAnswerBtn(answer, index) {
-    const btn = document.createElement('button');
-    btn.classList.add('answerBtn');
-    btn.innerHTML = `<div>${answer.text}</div><div style="font-size:14px; color:#a3b4c4; margin-top:4px;">${answer.sindhi}</div>`;
-    btn.addEventListener('click', () => answerSelected(answer.correct));
-    return btn;
-  }
-
-  function speakText(text) {
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      const utter = new SpeechSynthesisUtterance(text);
-      // Pakistani Urdu voice is not always available, use generic Urdu/English
-      utter.lang = 'ur-PK';
-      utter.rate = 0.9;
-      window.speechSynthesis.speak(utter);
-    }
-  }
-
-  function playSound(url) {
-    const audio = new Audio(url);
-    audio.play();
-  }
-
-  function showQuestion() {
-    const q = selectedQuestions[currentQuestionIndex];
-    questionNumberEl.textContent = `Question ${currentQuestionIndex + 1} of ${selectedQuestions.length}`;
-    questionTextEl.textContent = q.question;
-    questionSindhiEl.textContent = q.questionSindhi;
-    clearAnswers();
-
-    q.answers.forEach(ans => {
-      const btn = createAnswerBtn(ans);
-      answersEl.appendChild(btn);
-    });
-
-    speakText(q.question);
-  }
-
-  function answerSelected(isCorrect) {
-    // Disable all buttons
-    const buttons = answersEl.querySelectorAll('button');
-    buttons.forEach(btn => btn.disabled = true);
-
-    if (isCorrect) {
-      correctAnswersCount++;
-      playSound(correctSoundUrl);
-      showResultOverlay(true);
-    } else {
-      playSound(wrongSoundUrl);
-      showResultOverlay(false);
-    }
-  }
-
-  function showResultOverlay(correct) {
-    resultOverlay.classList.add('active');
-    resultOverlay.classList.toggle('correct', correct);
-    resultOverlay.textContent = correct ? "Correct! Well done." : "Wrong Answer. Try next.";
-    const nextBtn = document.createElement('button');
-    nextBtn.textContent = currentQuestionIndex + 1 === selectedQuestions.length ? "See Score" : "Next Question";
-    nextBtn.onclick = () => {
-      resultOverlay.classList.remove('active');
-      if (currentQuestionIndex + 1 === selectedQuestions.length) {
-        showFinalScore();
-      } else {
-        currentQuestionIndex++;
-        showQuestion();
-      }
-    };
-    resultOverlay.appendChild(nextBtn);
-  }
-
-  function showFinalScore() {
-    startScreen.classList.add('active');
-    questionScreen.classList.remove('active');
-    resultOverlay.classList.add('active');
-    resultOverlay.classList.remove('correct');
-    resultOverlay.innerHTML = `<div>Game Over! You answered ${correctAnswersCount} out of ${selectedQuestions.length} correctly.</div>`;
-    const restartBtn = document.createElement('button');
-    restartBtn.textContent = "Play Again";
-    restartBtn.onclick = () => {
-      resultOverlay.classList.remove('active');
-      startGame();
-    };
-    resultOverlay.appendChild(restartBtn);
+  function speakText(text, lang='ur-PK') {
+    if (!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = lang;
+    utterance.rate = 0.9;
+    window.speechSynthesis.speak(utterance);
   }
 
   function startGame() {
-    startScreen.classList.remove('active');
-    questionScreen.classList.add('active');
-    resultOverlay.classList.remove('active');
-    correctAnswersCount = 0;
-    currentQuestionIndex = 0;
-    selectQuestions();
-    showQuestion();
+    currentQIndex = 0;
+    homeScreen.style.display = 'none';
+    questionScreen.style.display = 'flex';
+    updateQuestion();
   }
 
-  startBtn.addEventListener('click', () => {
-    startGame();
-  });
-})();
+  function updateQuestion() {
+    const q = questions[currentQIndex];
+    questionNumber.textContent = `Question ${currentQIndex + 1} / ${questions.length}`;
+    questionText.textContent = q.q;
+    sindhiTranslation.textContent = q.sindhi;
+    optionsContainer.innerHTML = '';
+    q.options.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.innerHTML = `<span class="ans-en">${opt.en}</span><span class="ans-sd">${opt.sd}</span>`;
+      btn.onclick = () => checkAnswer(i);
+      optionsContainer.appendChild(btn);
+    });
+    updateProgressBar();
+    speakText(q.q + ". جواب کے اختیارات: " + q.options.map(o=>o.en).join(", "), 'ur-PK');
+  }
+
+  function updateProgressBar() {
+    const percent = ((currentQIndex) / questions.length) * 100;
+    progressBarFill.style.height = percent + '%';
+  }
+
+  function showPopup(message, duration=2000) {
+    popup.textContent = message;
+    popup.style.display = 'block';
+    setTimeout(() => {
+      popup.style.display = 'none';
+    }, duration);
+  }
+
+  function checkAnswer(selectedIndex) {
+    const correctIndex = questions[currentQIndex].answer;
+    if (selectedIndex === correctIndex) {
+      showPopup("صحیح جواب!", 1500);
+      speakText("صحیح جواب", 'ur-PK');
+      currentQIndex++;
+      if (currentQIndex < questions.length) {
+        setTimeout(() => {
+          updateQuestion();
+        }, 1600);
+      } else {
+        setTimeout(() => {
+          alert("Quiz completed! Returning to Home.");
+          resetToHome();
+        }, 1600);
+      }
+    } else {
+      speakText("غلط جواب! واپس شروع پر جاؤ", 'ur-PK');
+      showPopup("غلط جواب! واپس شروع پر جاؤ", 2000);
+      setTimeout(() => {
+        resetToHome();
+      }, 2000);
+    }
+  }
+
+  function resetToHome() {
+    questionScreen.style.display = 'none';
+    homeScreen.style.display = 'flex';
+    progressBarFill.style.height = '0%';
+  }
+
+  startBtn.addEventListener('click', startGame);
 </script>
 </body>
 </html>
