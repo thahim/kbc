@@ -2,267 +2,225 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Kaun Banega Crorepati - Karachi Quiz</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Who Wants to Be a Millionaire – Abdul Salam Thahim</title>
   <style>
     body {
-      background-color: #001f3f;
-      color: orange;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0; padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: #111;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
       overflow: hidden;
     }
-    /* Flare effects */
-    .flare {
-      position: absolute;
-      width: 80px; height: 80px;
+
+    .screen { display: none; text-align: center; width: 100%; max-width: 600px; }
+    .screen.active { display: block; }
+
+    button {
+      padding: 10px 20px;
+      background: orange;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .profile {
       border-radius: 50%;
-      background: radial-gradient(orange, transparent);
-      opacity: 0.4;
-      animation: float 8s infinite ease-in-out;
-      pointer-events: none;
-      z-index: 0;
-    }
-    .flare:nth-child(1){ top:10%; left:20%; }
-    .flare:nth-child(2){ top:30%; left:70%; animation-delay:2s; }
-    .flare:nth-child(3){ top:60%; left:40%; animation-delay:4s; }
-    .flare:nth-child(4){ top:80%; left:80%; animation-delay:6s; }
-    @keyframes float {
-      0%,100%{ transform:translateY(0) scale(1); }
-      50%{ transform:translateY(-20px) scale(1.2); opacity:0.7; }
+      width: 150px;
+      margin: 20px auto;
+      display: block;
+      border: 5px solid orange;
     }
 
-    /* Screens */
-    .screen { display: none; position: absolute; inset:0; z-index:1; }
-    .active { display: flex; }
-    .screen.flex { flex-direction: column; justify-content: center; align-items: center; }
-
-    /* Home */
-    #homeScreen { background: #001f3f; }
-    #homeScreen img {
-      border-radius: 50%; width: 140px; height:140px;
-      border: 4px solid orange; margin-bottom:20px;
-    }
-    #homeScreen h1 {
-      color: orange; margin:0; font-size:32px;
-    }
-    #homeScreen button {
-      margin-top:20px; padding:12px 24px;
-      font-size:18px; background:orange; border:none;
-      border-radius:8px; color:#001f3f; cursor:pointer;
-    }
-    #homeScreen button:hover { background:#ffb84d; }
-
-    /* Game */
-    #gameScreen { flex-direction: row; justify-content: center; align-items: flex-start; }
-    #questionBox {
-      background:black; border:3px solid orange; border-radius:15px;
-      padding:20px; max-width:600px; width:90%; color:orange;
-      margin:20px; font-size:24px; min-height:120px;
-    }
-    .options {
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:15px;
-      max-width:600px; width:90%;
-      margin:20px;
-    }
-    .option {
-      background:black; border:2px solid orange; border-radius:10px;
-      padding:15px; font-size:18px; color:orange;
-      text-align:center; cursor:pointer;
-      user-select:none; display:flex; align-items:center; justify-content:center;
-      min-height:80px; transition:background 0.3s,color 0.3s;
-    }
-    .option.disabled { opacity:0.6; cursor:default; }
-    .option.correct { background:#28a745; border-color:#28a745; color:#fff; }
-    .option.wrong   { background:#dc3545; border-color:#dc3545; color:#fff; }
-
-    /* Progress */
-    #progress {
-      position:fixed; top:20px; right:20px;
-      background:black; border:2px solid orange;
-      border-radius:10px; padding:8px 12px;
-      font-size:18px; user-select:none;
+    /* QUIZ LAYOUT */
+    #quiz .container {
+      display: flex;
+      flex-direction: column;       /* stack vertically */
+      align-items: stretch;
+      margin: 20px 0;
     }
 
-    /* Wrong Popup */
-    #popupOverlay {
-      display:none; position:fixed; inset:0;
-      background:rgba(0,0,0,0.85); z-index:10;
-      justify-content:center; align-items:center;
+    .question-box {
+      background: #000;
+      border: 3px solid orange;
+      padding: 20px;
+      font-size: 1.5rem;
+      margin-bottom: 15px;         /* space before answers */
     }
-    #popup {
-      background:black; border:3px solid orange; border-radius:15px;
-      padding:30px 40px; color:orange; text-align:center;
-      font-size:28px;
-    }
-    #popup button {
-      margin-top:20px; padding:10px 20px;
-      background:orange; border:none; color:#001f3f;
-      border-radius:8px; font-size:18px; cursor:pointer;
+    .sindhi {
+      font-size: 1rem;
+      color: #aaa;
+      margin-top: 5px;
     }
 
-    /* Flash overlay */
-    #flashOverlay {
-      position:fixed; inset:0; background:orange; opacity:0;
-      pointer-events:none; z-index:5; transition:opacity 0.3s;
+    .answers-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+    .answers-grid button {
+      background: #000;
+      border: 3px solid orange;
+      padding: 20px;
+      font-size: 1.2rem;
+      color: #fff;
+    }
+
+    .progress-bar {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 20px;
+      height: 80%;
+      background: linear-gradient(orange, darkorange);
+    }
+
+    #dev-footer {
+      margin-top: 30px;
+    }
+    .mini-profile {
+      width: 60px;
+      border-radius: 50%;
+      border: 2px solid orange;
+      vertical-align: middle;
+    }
+    #dev-footer p {
+      display: inline-block;
+      margin-left: 10px;
+      vertical-align: middle;
     }
   </style>
 </head>
 <body>
 
-  <!-- Flares -->
-  <div class="flare"></div>
-  <div class="flare"></div>
-  <div class="flare"></div>
-  <div class="flare"></div>
-
-  <!-- Home Screen -->
-  <div id="homeScreen" class="screen flex active">
-    <img src="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg" alt="Developer Photo">
-    <h1>Kaun Banega Crorepati</h1>
-    <button id="startBtn">Start Game</button>
+  <!-- HOME -->
+  <div id="home" class="screen active">
+    <h1>Developed by Abdul Salam Thahim</h1>
+    <h2>Foundation Public School, Karachi</h2>
+    <img src="assets/abdul-salam.jpg" alt="Abdul Salam Thahim" class="profile"/>
+    <button onclick="startGame()">Start</button>
   </div>
 
-  <!-- Game Screen -->
-  <div id="gameScreen" class="screen flex">
-    <div id="questionBox">
-      <div id="questionText"></div>
+  <!-- QUIZ -->
+  <div id="quiz" class="screen">
+    <div class="progress-bar" id="progress"></div>
+    <div class="container">
+      <div class="question-box">
+        <div id="questionText"></div>
+        <div id="questionSindhi" class="sindhi"></div>
+      </div>
+      <div class="answers-grid" id="answers"></div>
     </div>
-    <div class="options" id="optionsContainer"></div>
-  </div>
-
-  <div id="progress">Question 0 / 15</div>
-
-  <!-- Wrong Popup -->
-  <div id="popupOverlay" class="screen flex">
-    <div id="popup">
-      <div>Wrong Answer</div>
-      <button id="backHomeBtn">Back to Home</button>
+    <div id="dev-footer">
+      <img src="assets/abdul-salam.jpg" class="mini-profile"/>
+      <p>Abdul Salam Thahim</p>
     </div>
   </div>
 
-  <!-- Flash -->
-  <div id="flashOverlay"></div>
+  <!-- GAME OVER -->
+  <div id="gameOver" class="screen">
+    <h2>Oh, your answer is not correct</h2>
+    <button onclick="goHome()">Go back to Home</button>
+  </div>
 
   <script>
-    // 50 Karachi questions (provide at least 10 here; you can expand)
-    const pool = [
-      {q:"What is the largest city in Pakistan?", options:["Karachi","Lahore","Islamabad","Quetta"], answer:0},
-      {q:"Which sea borders Karachi?",        options:["Arabian Sea","Red Sea","Baltic Sea","Black Sea"], answer:0},
-      {q:"Karachi is in which province?",    options:["Sindh","Punjab","Balochistan","KP"],     answer:0},
-      {q:"Karachi's main airport is?",       options:["Jinnah Intl.","Heathrow","Benazir Intl.","Allama Iqbal"], answer:0},
-      {q:"Famous beach in Karachi?",         options:["Clifton","French","Hawke's Bay","Sandspit"], answer:0},
-      {q:"Historic market in Karachi?",      options:["Empress","Anarkali","Liberty","Zainab"], answer:0},
-      {q:"River near Karachi?",              options:["Lyari","Indus","Chenab","Jhelum"],         answer:0},
-      {q:"Karachi celebrates Independence on?",options:["14 Aug","23 Mar","1 May","25 Dec"],     answer:0},
-      {q:"Official language in Karachi?",    options:["Urdu","Sindhi","Punjabi","Balochi"],      answer:0},
-      {q:"Most popular sport in Karachi?",   options:["Cricket","Football","Hockey","Squash"],   answer:0},
-      // ...add up to 50 unique Qs
+    // ─── Embed your 50 Karachi questions here ─────────────────────
+    const allQuestions = [
+      { question: "What is the tallest building in Karachi?", sindhi: "ڪراچيءَ ۾ سڀ کان اوچو عمارت ڪهڙو آهي؟", answers: [
+          { text: "Bahria Icon Tower", correct: true },
+          { text: "MCB Tower",      correct: false },
+          { text: "Habib Bank Plaza",correct: false },
+          { text: "Dolmen Tower",    correct: false }
+      ]},
+      { question: "Which beach is located in Karachi?", sindhi: "ڪراچيءَ ۾ ڪهڙو سمنڊ آهي؟", answers: [
+          { text: "Clifton Beach", correct: true },
+          { text: "Hawke's Bay",  correct: false },
+          { text: "Seaview",      correct: false },
+          { text: "All of the above", correct: false }
+      ]},
+      /* … add remaining 48 … */
     ];
 
-    // Utility: shuffle
-    function shuffle(a){
-      for(let i=a.length-1;i>0;i--){
-        const j=Math.floor(Math.random()*(i+1));
-        [a[i],a[j]]=[a[j],a[i]];
-      }
-    }
+    let questions = [], current = 0;
 
-    let questions, current=0, accepting=true;
-    const total=15;
-    const homeScreen = document.getElementById('homeScreen');
-    const gameScreen = document.getElementById('gameScreen');
-    const popup     = document.getElementById('popupOverlay');
-    const qText     = document.getElementById('questionText');
-    const optsCon   = document.getElementById('optionsContainer');
-    const prog      = document.getElementById('progress');
-    const flashOv   = document.getElementById('flashOverlay');
-
-    // English TTS
-    function speak(txt){
-      if(!window.speechSynthesis) return;
-      let u = new SpeechSynthesisUtterance(txt);
-      u.lang = 'en-US';
-      window.speechSynthesis.cancel();
-      window.speechSynthesis.speak(u);
-    }
-
-    function startGame(){
-      // pick 15 random from pool
-      questions = pool.slice();
-      shuffle(questions);
-      questions = questions.slice(0, total);
+    function startGame() {
+      // take a fresh shuffle of the full 50 and grab first 15
+      questions = shuffle(allQuestions).slice(0, 15);
       current = 0;
-      homeScreen.classList.remove('active');
-      popup.classList.remove('active');
-      gameScreen.classList.add('active');
-      showQ();
+      swapScreen("home", "quiz");
+      showQuestion();
     }
 
-    function showQ(){
-      accepting = true;
-      const obj = questions[current];
-      // Display question
-      qText.textContent = obj.q;
-      // Build options
-      optsCon.innerHTML = '';
-      let arr = obj.options.map((o,i)=>({o,i}));
-      shuffle(arr);
-      arr.forEach(o =>{
-        let d = document.createElement('div');
-        d.className='option';
-        d.textContent = o.o;
-        d.dataset.correct = (o.i===obj.answer);
-        d.addEventListener('click', check);
-        optsCon.appendChild(d);
+    function showQuestion() {
+      const q = questions[current];
+      document.getElementById("questionText").textContent   = q.question;
+      document.getElementById("questionSindhi").textContent = q.sindhi;
+
+      const grid = document.getElementById("answers");
+      grid.innerHTML = "";
+      shuffle(q.answers).forEach(a => {
+        const btn = document.createElement("button");
+        btn.textContent = a.text;
+        btn.onclick     = () => checkAnswer(a.correct);
+        grid.appendChild(btn);
       });
-      // TTS: question then each option
-      speak(obj.q);
-      arr.forEach(o=> speak(o.o));
-      prog.textContent = `Question ${current+1} / ${total}`;
+
+      updateProgress();
     }
 
-    function flash(){
-      flashOv.style.opacity = '0.7';
-      setTimeout(()=>flashOv.style.opacity='0',300);
-    }
-
-    function check(e){
-      if(!accepting) return;
-      accepting=false;
-      const btn = e.currentTarget;
-      const ok = btn.dataset.correct==='true';
-      if(ok){
-        btn.classList.add('correct');
-        speak('Correct answer');
-        flash();
-        setTimeout(()=>{
+    function checkAnswer(isCorrect) {
+      if (isCorrect) {
+        speak("Correct answer");
+        flashScreen();
+        setTimeout(() => {
           current++;
-          if(current<total) showQ();
-          else {
-            alert('Quiz Complete!');
-            backHome();
+          if (current < questions.length) {
+            showQuestion();
+          } else {
+            speak("Congratulations! You’ve won!");
+            goHome();
           }
-        },500);
+        }, 500);
       } else {
-        btn.classList.add('wrong');
-        speak('Wrong answer');
-        popup.classList.add('active');
-        // disable all
-        document.querySelectorAll('.option').forEach(x=>x.classList.add('disabled'));
+        speak("Oh, your answer is not correct");
+        swapScreen("quiz", "gameOver");
       }
     }
 
-    function backHome(){
-      gameScreen.classList.remove('active');
-      popup.classList.remove('active');
-      homeScreen.classList.add('active');
+    function goHome() {
+      swapScreen("gameOver", "home");
     }
 
-    document.getElementById('startBtn').onclick = startGame;
-    document.getElementById('backHomeBtn').onclick = backHome;
+    // utility to toggle screens
+    function swapScreen(hideId, showId) {
+      document.getElementById(hideId).classList.remove("active");
+      document.getElementById(showId).classList.add("active");
+    }
+
+    function flashScreen() {
+      document.body.style.background = "#fff";
+      setTimeout(() => document.body.style.background = "#111", 100);
+    }
+
+    function updateProgress() {
+      const bar = document.getElementById("progress");
+      bar.style.height = ((current + 1) / 15 * 100) + "%";
+    }
+
+    function speak(text) {
+      const msg = new SpeechSynthesisUtterance(text);
+      msg.lang = "en-PK";
+      speechSynthesis.speak(msg);
+    }
+
+    function shuffle(arr) {
+      return arr.slice().sort(() => Math.random() - 0.5);
+    }
   </script>
 </body>
 </html>
