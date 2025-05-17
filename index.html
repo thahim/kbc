@@ -1,195 +1,218 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Who wants to be a millionaire? Developed by Abdul Salam Thahim" />
-  <meta property="og:title" content="Who wants to be a millionaire?" />
-  <meta property="og:description" content="Developed by Abdul Salam Thahim" />
-  <meta property="og:image" content="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg" />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://yourwebsite.com" />
-  <title>Who Wants to Be a Millionaire</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #0b1c2c;
-      color: white;
-      text-align: center;
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="Who wants to be a millionaire? Developed by Abdul Salam Thahim" />
+<meta property="og:title" content="Who wants to be a millionaire?" />
+<meta property="og:description" content="Developed by Abdul Salam Thahim" />
+<meta property="og:image" content="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg" />
+<title>Who Wants to Be a Millionaire</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #0b1c2c;
+    color: white;
+    text-align: center;
+  }
+  header, footer {
+    padding: 10px;
+    background-color: #111;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  header img, footer img {
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+  }
+  #home-screen {
+    padding: 50px;
+  }
+  .home-photo {
+    width: 150px;
+    border-radius: 50%;
+    border: 5px solid orange;
+  }
+  .home-name {
+    font-size: 24px;
+    margin: 10px 0;
+  }
+  button {
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: orange;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    color: black;
+  }
+  #question-screen {
+    display: none;
+    padding: 20px;
+  }
+  .question-box {
+    background: black;
+    border: 4px solid orange;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+  #answers {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    justify-items: center;
+  }
+  @media (max-width: 600px) {
+    #answers {
+      grid-template-columns: repeat(2, 1fr);
     }
-    header, footer {
-      padding: 10px;
-      background-color: #111;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-    }
-    header img, footer img {
-      border-radius: 50%;
-      width: 80px;
-      height: 80px;
-    }
-    #home-screen {
-      padding: 50px;
-    }
-    .home-photo {
-      width: 150px;
-      border-radius: 50%;
-      border: 5px solid orange;
-    }
-    .home-name {
-      font-size: 24px;
-      margin: 10px 0;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 18px;
-      background-color: orange;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      color: black;
-    }
-    #question-screen {
-      display: none;
-      padding: 20px;
-    }
-    .question-box {
-      background: black;
-      border: 4px solid orange;
-      padding: 20px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-    }
-    .answer-box {
-      border: 3px solid orange;
-      padding: 10px;
-      border-radius: 10px;
-      margin: 10px;
-      background-color: #1f2e3a;
-      cursor: pointer;
-    }
-    .answer-box:hover {
-      background-color: #ffa500;
-      color: black;
-    }
-    #progress {
-      height: 0;
-      width: 10px;
-      position: fixed;
-      right: 0;
-      bottom: 0;
-      background-color: orange;
-      transition: height 0.5s;
-    }
-  </style>
+  }
+  .answer-box {
+    border: 3px solid orange;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #1f2e3a;
+    cursor: pointer;
+    width: 100%;
+    max-width: 200px;
+  }
+  .answer-box:hover {
+    background-color: #ffa500;
+    color: black;
+  }
+  #progress {
+    width: 10px;
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    background-color: orange;
+    transition: height 0.5s;
+    height: 0;
+  }
+</style>
 </head>
 <body>
-  <header>
-    <img src="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg" alt="Developer" />
-    <div>Developed by Abdul Salam Thahim</div>
-  </header>
-  <main>
-    <div id="home-screen">
-      <img src="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg" class="home-photo" />
-      <h2 class="home-name">Developed by Abdul Salam Thahim</h2>
-      <button onclick="startGame()">Start Game</button>
-    </div>
-    <div id="question-screen">
-      <div class="question-box" id="question"></div>
-      <div id="answers"></div>
-    </div>
-    <div id="progress"></div>
-  </main>
-  <footer>
-    <img src="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg" alt="Developer" />
-    <div>Developed by Abdul Salam Thahim</div>
-  </footer>
+<header>
+  <img src="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg" alt="Developer" />
+  <div>Developed by Abdul Salam Thahim</div>
+</header>
 
-  <script>
-    let current = 0;
-    const questions = Array.from({ length: 25 }, (_, i) => ({
-      question: `What is Karachi famous for ${i + 1}?`,
-      translation: `ڪراچي ڇو مشهور آهي ${i + 1}؟`,
-      answers: [
-        `Beaches / سمنڊ ڪنارا`,
-        `Mountains / جبل`,
-        `Forests / ٻيل`,
-        `Deserts / ريگستان`
-      ],
-      correct: `Beaches / سمنڊ ڪنارا`
-    }));
+<main>
+  <div id="home-screen">
+    <img src="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg" class="home-photo" alt="Developer Photo" />
+    <h2 class="home-name">Developed by Abdul Salam Thahim</h2>
+    <button onclick="startGame()">Start Game</button>
+  </div>
 
-    function startGame() {
-      speechSynthesis.cancel();
-      current = 0;
-      document.getElementById('home-screen').style.display = 'none';
-      document.getElementById('question-screen').style.display = 'block';
-      showQuestion();
+  <div id="question-screen">
+    <div class="question-box" id="question"></div>
+    <div id="answers"></div>
+  </div>
+
+  <div id="progress"></div>
+</main>
+
+<footer>
+  <img src="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg" alt="Developer" />
+  <div>Developed by Abdul Salam Thahim</div>
+</footer>
+
+<script>
+  const originalQuestions = Array.from({ length: 25 }, (_, i) => ({
+    question: `What is Karachi famous for #${i + 1}?`,
+    translation: `ڪراچي ڇو مشهور آهي #${i + 1}؟`,
+    answers: [
+      `Beaches / سمنڊ ڪنارا`,
+      `Mountains / جبل`,
+      `Forests / ٻيل`,
+      `Deserts / ريگستان`
+    ],
+    correct: `Beaches / سمنڊ ڪنارا`
+  }));
+
+  let questions = [];
+  let current = 0;
+
+  function shuffleArray(arr) {
+    // Fisher-Yates shuffle
+    for (let i = arr.length - 1; i > 0; i--) {
+      let j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+  }
+
+  function startGame() {
+    speechSynthesis.cancel();
+    questions = [...originalQuestions];
+    shuffleArray(questions);
+    current = 0;
+    document.getElementById('home-screen').style.display = 'none';
+    document.getElementById('question-screen').style.display = 'block';
+    showQuestion();
+  }
+
+  function showQuestion() {
+    speechSynthesis.cancel();
+    if (current >= questions.length) {
+      alert("You've completed the game!");
+      location.reload();
+      return;
     }
 
-    function showQuestion() {
-      speechSynthesis.cancel();
-      const q = questions[current];
-      document.getElementById('question').innerHTML = `<h2>Q${current + 1}: ${q.question}</h2><p><em>${q.translation}</em></p>`;
-      const answers = document.getElementById('answers');
-      answers.innerHTML = '';
-      q.answers.forEach(ans => {
-        const div = document.createElement('div');
-        div.className = 'answer-box';
-        div.textContent = ans;
-        div.onclick = () => checkAnswer(ans, q.correct);
-        answers.appendChild(div);
+    const q = questions[current];
+    document.getElementById('question').innerHTML = `<h2>Q${current + 1}: ${q.question}</h2><p><em>${q.translation}</em></p>`;
+
+    const answers = document.getElementById('answers');
+    answers.innerHTML = '';
+    q.answers.forEach(ans => {
+      const div = document.createElement('div');
+      div.className = 'answer-box';
+      div.textContent = ans;
+      div.onclick = () => checkAnswer(ans, q.correct);
+      answers.appendChild(div);
+    });
+
+    speakText(`${q.question}. Options are: ${q.answers.map(a => a.split(' / ')[0]).join(', ')}.`);
+    updateProgress();
+  }
+
+  function checkAnswer(selected, correct) {
+    speechSynthesis.cancel();
+    if (selected === correct) {
+      speakText("Correct answer!", () => {
+        current++;
+        showQuestion();
       });
-      speak(`${q.question}. ${q.answers.map(a => a.split(' / ')[0]).join('. ')}`);
-      updateProgress();
-    }
-
-    function checkAnswer(selected, correct) {
-      speechSynthesis.cancel();
-      if (selected === correct) {
-        speakCorrectAnswer(() => {
-          current++;
-          if (current < questions.length) {
-            showQuestion();
-          } else {
-            alert("You've completed the game!");
-            location.reload();
-          }
-        });
-      } else {
-        speak("Oh! Jawab ghalat hai.");
+    } else {
+      speakText("Oh! Jawab ghalat hai.", () => {
         setTimeout(() => {
           alert("Wrong answer! Restarting game.");
           speechSynthesis.cancel();
           location.reload();
-        }, 1500);
-      }
+        }, 1200);
+      });
     }
+  }
 
-    function updateProgress() {
-      const percent = ((current + 1) / questions.length) * 100;
-      document.getElementById('progress').style.height = percent + '%';
-    }
+  function updateProgress() {
+    const percent = ((current) / questions.length) * 100;
+    document.getElementById('progress').style.height = percent + "vh";
+  }
 
-    function speak(text) {
-      speechSynthesis.cancel();
-      const msg = new SpeechSynthesisUtterance(text);
-      msg.lang = 'en-US';
-      speechSynthesis.speak(msg);
-    }
-
-    function speakCorrectAnswer(callback) {
-      speechSynthesis.cancel();
-      const msg = new SpeechSynthesisUtterance("Correct answer!");
-      msg.lang = 'en-US';
-      msg.onend = callback;
-      speechSynthesis.speak(msg);
-    }
-
-    window.onbeforeunload = () => speechSynthesis.cancel();
-  </script>
+  function speakText(text, onEndCallback) {
+    if (!window.speechSynthesis) return;
+    speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    // Use English voice (modify if you want Urdu voice available on your system)
+    utterance.lang = 'en-US';
+    utterance.onend = onEndCallback || null;
+    speechSynthesis.speak(utterance);
+  }
+</script>
 </body>
 </html>
