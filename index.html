@@ -1,455 +1,195 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Who wants to be a millionaire? Developed by Abdul Salam Thahim" />
   <meta property="og:title" content="Who wants to be a millionaire?" />
-<meta property="og:description" content="Developed by Abdul Salam Thahim" />
-<meta property="og:image" content="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="http://thahim.github.io/kbc/">" />
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="description" content="Who wants to be a millionaire? Developed by Abdul Salam Thahim" />
-<title>Who Wants to Be a Millionaire - Karachi Quiz</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
-
-  body {
-    margin: 0; padding: 0;
-    background: #001f3f; /* navy blue */
-    color: white;
-    font-family: 'Fredoka One', cursive, sans-serif;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
-
-  header {
-    background: #011a33;
-    padding: 10px 20px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    color: orange;
-    font-weight: bold;
-  }
-  header img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 2px solid orange;
-    object-fit: cover;
-  }
-
-  main {
-    flex: 1;
-    padding: 20px;
-    position: relative;
-  }
-
-  /* Home Screen */
-  #home-screen {
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    margin-top: 50px;
-  }
-
-  .home-photo {
-    width: 160px;
-    height: 160px;
-    border-radius: 50%;
-    border: 4px solid orange;
-    object-fit: cover;
-    box-shadow: 0 0 15px orange;
-  }
-
-  .home-name {
-    font-size: 1.8rem;
-    color: orange;
-    margin: 0;
-    font-weight: bold;
-    text-shadow: 0 0 8px orange;
-  }
-
-  #start-btn {
-    background: orange;
-    border: none;
-    padding: 12px 30px;
-    font-size: 1.2rem;
-    font-weight: bold;
-    border-radius: 25px;
-    color: #001f3f;
-    cursor: pointer;
-    box-shadow: 0 0 12px orange;
-    transition: background 0.3s ease;
-  }
-  #start-btn:hover {
-    background: #ffb347;
-  }
-
-  /* Question Screen */
-  #question-screen {
-    display: none;
-    position: relative;
-  }
-  #question-box {
-    background: linear-gradient(135deg, #000000 0%, #0a0a0a 100%);
-    border: 4px solid orange;
-    clip-path: polygon(20% 0%, 80% 0%, 100% 50%, 80% 100%, 20% 100%, 0% 50%);
-    padding: 20px 30px;
-    font-size: 1.4rem;
-    font-weight: bold;
-    margin-bottom: 30px;
-    min-height: 90px;
-    color: white;
-    text-align: center;
-  }
-
-  #sindhi-translation {
-    font-size: 1rem;
-    color: #ffa500aa;
-    margin-top: 5px;
-    font-style: italic;
-  }
-
-  /* Answers */
-  #answers {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 18px;
-  }
-
-  .answer {
-    border: 3px solid orange;
-    padding: 15px;
-    border-radius: 15px;
-    font-weight: bold;
-    cursor: pointer;
-    background: #001a2a;
-    transition: background 0.3s ease, transform 0.15s ease;
-    user-select: none;
-  }
-  .answer:hover {
-    background: #ff8c00;
-    color: black;
-    transform: scale(1.05);
-  }
-
-  /* Progress Bar */
-  #progress-container {
-    position: fixed;
-    right: 10px;
-    bottom: 20px;
-    width: 30px;
-    height: 300px;
-    border: 3px solid orange;
-    border-radius: 15px;
-    background: #011a33;
-    display: flex;
-    flex-direction: column-reverse;
-    overflow: hidden;
-  }
-  #progress-bar {
-    background: orange;
-    width: 100%;
-    height: 0;
-    transition: height 0.5s ease;
-  }
-
-  /* Popup */
-  #popup {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #001f3f;
-    border: 4px solid orange;
-    border-radius: 25px;
-    padding: 30px 40px;
-    color: white;
-    font-weight: bold;
-    font-size: 1.6rem;
-    z-index: 9999;
-    text-align: center;
-    box-shadow: 0 0 20px orange;
-  }
-
-  /* Footer (developer name/photo) */
-  footer {
-    background: #011a33;
-    color: orange;
-    padding: 10px 20px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-weight: bold;
-  }
-  footer img {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border: 2px solid orange;
-    object-fit: cover;
-  }
-
-  /* Responsive for mobile */
-  @media (max-width: 480px) {
-    #answers {
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
+  <meta property="og:description" content="Developed by Abdul Salam Thahim" />
+  <meta property="og:image" content="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://yourwebsite.com" />
+  <title>Who Wants to Be a Millionaire</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #0b1c2c;
+      color: white;
+      text-align: center;
     }
-    #progress-container {
-      height: 200px;
-      width: 24px;
-      right: 5px;
-      bottom: 10px;
+    header, footer {
+      padding: 10px;
+      background-color: #111;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
     }
-    #question-box {
-      font-size: 1.2rem;
-      padding: 15px 20px;
-      min-height: 80px;
+    header img, footer img {
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
     }
-  }
-</style>
+    #home-screen {
+      padding: 50px;
+    }
+    .home-photo {
+      width: 150px;
+      border-radius: 50%;
+      border: 5px solid orange;
+    }
+    .home-name {
+      font-size: 24px;
+      margin: 10px 0;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: orange;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      color: black;
+    }
+    #question-screen {
+      display: none;
+      padding: 20px;
+    }
+    .question-box {
+      background: black;
+      border: 4px solid orange;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+    .answer-box {
+      border: 3px solid orange;
+      padding: 10px;
+      border-radius: 10px;
+      margin: 10px;
+      background-color: #1f2e3a;
+      cursor: pointer;
+    }
+    .answer-box:hover {
+      background-color: #ffa500;
+      color: black;
+    }
+    #progress {
+      height: 0;
+      width: 10px;
+      position: fixed;
+      right: 0;
+      bottom: 0;
+      background-color: orange;
+      transition: height 0.5s;
+    }
+  </style>
 </head>
 <body>
-
-<header>
-  <img src="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg" alt="Developer Photo" />
-  Abdul Salam Thahim
-</header>
-
-<main>
-  <!-- Home Screen -->
-  <div id="home-screen">
-    <img src="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg" alt="Abdul Salam Thahim" class="home-photo" />
-    <h2 class="home-name">Developed by Abdul Salam Thahim</h2>
-    <button id="start-btn">Start Game</button>
-  </div>
-
-  <!-- Question Screen -->
-  <div id="question-screen">
-    <div id="question-box">
-      <div id="english-question"></div>
-      <div id="sindhi-translation"></div>
+  <header>
+    <img src="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg" alt="Developer" />
+    <div>Developed by Abdul Salam Thahim</div>
+  </header>
+  <main>
+    <div id="home-screen">
+      <img src="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg" class="home-photo" />
+      <h2 class="home-name">Developed by Abdul Salam Thahim</h2>
+      <button onclick="startGame()">Start Game</button>
     </div>
-    <div id="answers"></div>
-  </div>
+    <div id="question-screen">
+      <div class="question-box" id="question"></div>
+      <div id="answers"></div>
+    </div>
+    <div id="progress"></div>
+  </main>
+  <footer>
+    <img src="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg" alt="Developer" />
+    <div>Developed by Abdul Salam Thahim</div>
+  </footer>
 
-  <!-- Progress Bar -->
-  <div id="progress-container">
-    <div id="progress-bar"></div>
-  </div>
-
-  <!-- Popup -->
-  <div id="popup"></div>
-</main>
-
-<footer>
-  <img src="https://thahim.github.io/ast/images/IMG-20250516-WA0027.jpg" alt="Developer Photo" />
-  Abdul Salam Thahim
-</footer>
-
-<script>
-  // 25 sample Karachi related questions with English + Sindhi
-  const questions = [
-    {
-      question: "What is the main language spoken in Karachi?",
-      sindhi: "ڪراچيءَ ۾ مکيه ٻولي ڪهڙي آهي؟",
+  <script>
+    let current = 0;
+    const questions = Array.from({ length: 25 }, (_, i) => ({
+      question: `What is Karachi famous for ${i + 1}?`,
+      translation: `ڪراچي ڇو مشهور آهي ${i + 1}؟`,
       answers: [
-        { text: "Sindhi", sindhi: "سنڌي", correct: false },
-        { text: "Urdu", sindhi: "اردو", correct: true },
-        { text: "Punjabi", sindhi: "پنجابي", correct: false },
-        { text: "Balochi", sindhi: "بلوچي", correct: false }
-      ]
-    },
-    {
-      question: "Which sea borders Karachi?",
-      sindhi: "ڪهڙو سمنڊ ڪراچيءَ کي ڳنڍي ٿو؟",
-      answers: [
-        { text: "Arabian Sea", sindhi: "عربي سمنڊ", correct: true },
-        { text: "Red Sea", sindhi: "سرخ سمنڊ", correct: false },
-        { text: "Black Sea", sindhi: "ڪارو سمنڊ", correct: false },
-        { text: "Mediterranean Sea", sindhi: "بحر اوقيانوس", correct: false }
-      ]
-    },
-    {
-      question: "What is Karachi famous for?",
-      sindhi: "ڪراچي ڪنهن شيءِ جي لاءِ مشهور آهي؟",
-      answers: [
-        { text: "Beaches", sindhi: "ساحل", correct: true },
-        { text: "Mountains", sindhi: "پهاڙ", correct: false },
-        { text: "Deserts", sindhi: " ريگستان", correct: false },
-        { text: "Snowfall", sindhi: "برفباري", correct: false }
-      ]
-    },
-    {
-      question: "What is the currency used in Karachi?",
-      sindhi: "ڪراچيءَ ۾ ڪهڙو ڪرنسي استعمال ٿئي ٿو؟",
-      answers: [
-        { text: "Pakistani Rupee", sindhi: "پاڪستاني روپيو", correct: true },
-        { text: "US Dollar", sindhi: "آمريڪي ڊالر", correct: false },
-        { text: "Euro", sindhi: "يورپين ڪرنسي", correct: false },
-        { text: "Yen", sindhi: "ين", correct: false }
-      ]
-    },
-    {
-      question: "Which is the largest city in Pakistan?",
-      sindhi: "پاڪستان جو سڀ کان وڏو شهر ڪهڙو آهي؟",
-      answers: [
-        { text: "Lahore", sindhi: "لاهور", correct: false },
-        { text: "Karachi", sindhi: "ڪراچي", correct: true },
-        { text: "Islamabad", sindhi: "اسلام آباد", correct: false },
-        { text: "Peshawar", sindhi: "پشاور", correct: false }
-      ]
-    },
-    {
-      question: "What is the popular food in Karachi?",
-      sindhi: "ڪراچيءَ ۾ مشهور کاڌو ڇا آهي؟",
-      answers: [
-        { text: "Biryani", sindhi: "برياني", correct: true },
-        { text: "Pizza", sindhi: "پيزا", correct: false },
-        { text: "Burger", sindhi: "برگر", correct: false },
-        { text: "Pasta", sindhi: "پاستا", correct: false }
-      ]
-    },
-    {
-      question: "Which famous landmark is in Karachi?",
-      sindhi: "ڪراچيءَ ۾ مشهور جڳھ ڪهڙي آهي؟",
-      answers: [
-        { text: "Quaid-e-Azam's Mausoleum", sindhi: "قائداعظم جو مزار", correct: true },
-        { text: "Badshahi Mosque", sindhi: "بادشاهي مسجد", correct: false },
-        { text: "Faisal Mosque", sindhi: "فيض مسجد", correct: false },
-        { text: "Minar-e-Pakistan", sindhi: "مينار پاڪستان", correct: false }
-      ]
-    },
-    {
-      question: "What is the main port of Karachi called?",
-      sindhi: "ڪراچي جو مکيه بندرگاهه ڇا سڏجي ٿو؟",
-      answers: [
-        { text: "Port of Karachi", sindhi: "ڪراچي جو بندرگاهه", correct: true },
-        { text: "Gwadar Port", sindhi: "گوادر بندرگاهه", correct: false },
-        { text: "Qasim Port", sindhi: "قاسم بندرگاهه", correct: false },
-        { text: "Bin Qasim Port", sindhi: "بن قاسم بندرگاهه", correct: false }
-      ]
-    },
-    {
-      question: "Which industry is prominent in Karachi?",
-      sindhi: "ڪهڙي صنعت ڪراچيءَ ۾ اهم آهي؟",
-      answers: [
-        { text: "Textile", sindhi: "ڪپڙي جي صنعت", correct: true },
-        { text: "Automobile", sindhi: "گاڏين جي صنعت", correct: false },
-        { text: "Electronics", sindhi: "اليڪٽرانڪس", correct: false },
-        { text: "Software", sindhi: "سافٽ ويئر", correct: false }
-      ]
-    },
-    {
-      question: "What is the name of Karachi's airport?",
-      sindhi: "ڪراچي جو هوائي اڏي جو نالو ڇا آهي؟",
-      answers: [
-        { text: "Jinnah International Airport", sindhi: "جناح بين الاقوامي هوائي اڏي", correct: true },
-        { text: "Allama Iqbal Airport", sindhi: "علامه اقبال هوائي اڏي", correct: false },
-        { text: "Benazir Bhutto Airport", sindhi: "بينظير ڀٽو هوائي اڏي", correct: false },
-        { text: "Lahore Airport", sindhi: "لاهور هوائي اڏي", correct: false }
-      ]
-    },
-    // ... add more questions here to make total 25 ...
-  ];
+        `Beaches / سمنڊ ڪنارا`,
+        `Mountains / جبل`,
+        `Forests / ٻيل`,
+        `Deserts / ريگستان`
+      ],
+      correct: `Beaches / سمنڊ ڪنارا`
+    }));
 
-  // Duplicate questions or add more here to reach 25
-  while (questions.length < 25) {
-    questions.push(...questions.slice(0, 25 - questions.length));
-  }
-
-  const homeScreen = document.getElementById('home-screen');
-  const questionScreen = document.getElementById('question-screen');
-  const startBtn = document.getElementById('start-btn');
-  const englishQuestion = document.getElementById('english-question');
-  const sindhiTranslation = document.getElementById('sindhi-translation');
-  const answersContainer = document.getElementById('answers');
-  const progressBar = document.getElementById('progress-bar');
-  const popup = document.getElementById('popup');
-
-  let currentQuestionIndex = 0;
-
-  startBtn.addEventListener('click', () => {
-    homeScreen.style.display = 'none';
-    questionScreen.style.display = 'block';
-    currentQuestionIndex = 0;
-    showQuestion();
-    updateProgress();
-  });
-
-  function showQuestion() {
-    const q = questions[currentQuestionIndex];
-    englishQuestion.textContent = q.question;
-    sindhiTranslation.textContent = q.sindhi;
-
-    // Clear previous answers
-    answersContainer.innerHTML = '';
-
-    q.answers.forEach((answer, idx) => {
-      const ansDiv = document.createElement('div');
-      ansDiv.className = 'answer';
-      ansDiv.innerHTML = `<div>${answer.text}</div><div style="font-size:0.85rem; color:#ffa500bb;">${answer.sindhi}</div>`;
-      ansDiv.onclick = () => checkAnswer(answer.correct);
-      answersContainer.appendChild(ansDiv);
-    });
-
-    // TTS: Read question & answers in English
-    speakText(q.question + '. Answers are: ' + q.answers.map(a => a.text).join(', '));
-  }
-
-  function checkAnswer(isCorrect) {
-    if (isCorrect) {
-      speakText("Correct answer");
-      currentQuestionIndex++;
-      if (currentQuestionIndex >= questions.length) {
-        alert("Congratulations! You completed all questions.");
-        resetGame();
-      } else {
-        showQuestion();
-        updateProgress();
-      }
-    } else {
-      speakText("Wrong answer");
-      showPopup("Oh! Wrong answer. Game will restart.");
+    function startGame() {
+      speechSynthesis.cancel();
+      current = 0;
+      document.getElementById('home-screen').style.display = 'none';
+      document.getElementById('question-screen').style.display = 'block';
+      showQuestion();
     }
-  }
 
-  function updateProgress() {
-    const progressPercent = ((currentQuestionIndex) / questions.length) * 100;
-    progressBar.style.height = progressPercent + '%';
-  }
+    function showQuestion() {
+      speechSynthesis.cancel();
+      const q = questions[current];
+      document.getElementById('question').innerHTML = `<h2>Q${current + 1}: ${q.question}</h2><p><em>${q.translation}</em></p>`;
+      const answers = document.getElementById('answers');
+      answers.innerHTML = '';
+      q.answers.forEach(ans => {
+        const div = document.createElement('div');
+        div.className = 'answer-box';
+        div.textContent = ans;
+        div.onclick = () => checkAnswer(ans, q.correct);
+        answers.appendChild(div);
+      });
+      speak(`${q.question}. ${q.answers.map(a => a.split(' / ')[0]).join('. ')}`);
+      updateProgress();
+    }
 
-  function resetGame() {
-    questionScreen.style.display = 'none';
-    homeScreen.style.display = 'flex';
-    currentQuestionIndex = 0;
-    updateProgress();
-  }
+    function checkAnswer(selected, correct) {
+      speechSynthesis.cancel();
+      if (selected === correct) {
+        speakCorrectAnswer(() => {
+          current++;
+          if (current < questions.length) {
+            showQuestion();
+          } else {
+            alert("You've completed the game!");
+            location.reload();
+          }
+        });
+      } else {
+        speak("Oh! Jawab ghalat hai.");
+        setTimeout(() => {
+          alert("Wrong answer! Restarting game.");
+          speechSynthesis.cancel();
+          location.reload();
+        }, 1500);
+      }
+    }
 
-  // Popup UI
-  function showPopup(message) {
-    popup.textContent = message;
-    popup.style.display = 'block';
-    setTimeout(() => {
-      popup.style.display = 'none';
-      resetGame();
-    }, 3500);
-  }
+    function updateProgress() {
+      const percent = ((current + 1) / questions.length) * 100;
+      document.getElementById('progress').style.height = percent + '%';
+    }
 
-  // TTS - Using English voice
-  function speakText(text) {
-    if (!window.speechSynthesis) return;
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
-    window.speechSynthesis.speak(utterance);
-  }
-</script>
+    function speak(text) {
+      speechSynthesis.cancel();
+      const msg = new SpeechSynthesisUtterance(text);
+      msg.lang = 'en-US';
+      speechSynthesis.speak(msg);
+    }
+
+    function speakCorrectAnswer(callback) {
+      speechSynthesis.cancel();
+      const msg = new SpeechSynthesisUtterance("Correct answer!");
+      msg.lang = 'en-US';
+      msg.onend = callback;
+      speechSynthesis.speak(msg);
+    }
+
+    window.onbeforeunload = () => speechSynthesis.cancel();
+  </script>
 </body>
 </html>
