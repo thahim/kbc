@@ -26,7 +26,7 @@
       font-size: 1.2rem;
       cursor: pointer;
       margin: 10px;
-      text-align: left; /* so Sindhi appears neatly under English */
+      text-align: left;
     }
     .profile {
       border-radius: 50%;
@@ -49,8 +49,7 @@
       margin-bottom: 15px;
       text-align: left;
     }
-    .question-box .sindhi,
-    .answers-grid .sindhi {
+    .sindhi {
       font-size: 1rem;
       color: #aaa;
       margin-top: 5px;
@@ -59,6 +58,13 @@
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 15px;
+    }
+    .answers-grid button {
+      background: #000;
+      border: 3px solid orange;
+      padding: 20px;
+      font-size: 1.2rem;
+      color: #fff;
     }
     .progress-bar {
       position: absolute;
@@ -117,11 +123,9 @@
   </div>
 
   <script>
-    // ─── 25 Karachi questions with Sindhi ────────────────────────────
+    // 25 Karachi questions (English + Sindhi)
     const allQuestions = [
-      {
-        question: "What is the tallest building in Karachi?",
-        sindhiQuestion: "ڪراچيءَ ۾ سڀ کان اوچو عمارت ڪهڙو آهي؟",
+      { question: "What is the tallest building in Karachi?", sindhiQuestion: "ڪراچيءَ ۾ سڀ کان اوچو عمارت ڪهڙو آهي؟",
         answers: [
           { text: "Bahria Icon Tower", sindhi: "بحريه آئڪن ٽاور", correct: true },
           { text: "MCB Tower", sindhi: "ايم سي بي ٽاور", correct: false },
@@ -129,9 +133,7 @@
           { text: "Dolmen Tower", sindhi: "ڊولمن ٽاور", correct: false }
         ]
       },
-      {
-        question: "Which beach is located in Karachi?",
-        sindhiQuestion: "ڪراچيءَ ۾ ڪهڙو ساحل آهي؟",
+      { question: "Which beach is located in Karachi?", sindhiQuestion: "ڪراچيءَ ۾ ڪهڙو ساحل آهي؟",
         answers: [
           { text: "Clifton Beach", sindhi: "ڪلفٽن ساحل", correct: true },
           { text: "Hawke's Bay", sindhi: "هاڪس بے", correct: false },
@@ -139,9 +141,7 @@
           { text: "Sandspit Beach", sindhi: "سينڊ اسپٽ ساحل", correct: false }
         ]
       },
-      /* … add remaining 23 questions here, each with
-           question, sindhiQuestion,
-           and answers[] with {text, sindhi, correct} … */
+      /* … add remaining 23 here … */
     ];
 
     let questions = [], current = 0;
@@ -158,22 +158,19 @@
       document.getElementById("questionText").textContent = q.question;
       const qSindhi = document.getElementById("questionSindhi");
       qSindhi.textContent = q.sindhiQuestion;
-      qSindhi.setAttribute("aria-hidden", "true");
 
       const grid = document.getElementById("answers");
       grid.innerHTML = "";
       shuffle(q.answers).forEach(a => {
         const btn = document.createElement("button");
-        // English part (read by TTS)
+        // English
         const en = document.createElement("div");
         en.textContent = a.text;
-
-        // Sindhi part (hidden from TTS)
+        // Sindhi (hidden from TTS)
         const si = document.createElement("div");
         si.textContent = a.sindhi;
         si.className = "sindhi";
         si.setAttribute("aria-hidden", "true");
-
         btn.appendChild(en);
         btn.appendChild(si);
         btn.onclick = () => checkAnswer(a.correct);
@@ -181,8 +178,7 @@
       });
 
       updateProgress();
-      // Read only the English question
-      speak(q.question);
+      speak(q.question);  // Read question aloud :contentReference[oaicite:2]{index=2}
     }
 
     function checkAnswer(isCorrect) {
@@ -224,14 +220,14 @@
 
     function speak(text, callback) {
       const msg = new SpeechSynthesisUtterance(text);
-      msg.lang = "en-GB";
+      msg.lang = "en-GB";               // :contentReference[oaicite:3]{index=3}
       msg.onend = () => callback && callback();
       speechSynthesis.cancel();
-      speechSynthesis.speak(msg);
+      speechSynthesis.speak(msg);       // :contentReference[oaicite:4]{index=4}
     }
 
     function shuffle(arr) {
-      return arr.slice().sort(() => Math.random() - 0.5);
+      return arr.slice().sort(() => Math.random() - 0.5); // :contentReference[oaicite:5]{index=5}
     }
   </script>
 </body>
