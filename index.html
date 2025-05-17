@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>Who Wants to Be a Millionaire – Abdul Salam Thahim</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Who Wants to Be a Millionaire – Abdul Salam Thahim</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -16,10 +16,8 @@
       height: 100vh;
       overflow: hidden;
     }
-
     .screen { display: none; text-align: center; width: 100%; max-width: 600px; }
     .screen.active { display: block; }
-
     button {
       padding: 10px 20px;
       background: orange;
@@ -27,8 +25,8 @@
       border-radius: 10px;
       font-size: 1.2rem;
       cursor: pointer;
+      margin: 10px;
     }
-
     .profile {
       border-radius: 50%;
       width: 150px;
@@ -36,28 +34,25 @@
       display: block;
       border: 5px solid orange;
     }
-
     /* QUIZ LAYOUT */
     #quiz .container {
       display: flex;
-      flex-direction: column;       /* stack vertically */
+      flex-direction: column;
       align-items: stretch;
       margin: 20px 0;
     }
-
     .question-box {
       background: #000;
       border: 3px solid orange;
       padding: 20px;
       font-size: 1.5rem;
-      margin-bottom: 15px;         /* space before answers */
+      margin-bottom: 15px;
     }
     .sindhi {
       font-size: 1rem;
       color: #aaa;
       margin-top: 5px;
     }
-
     .answers-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -70,7 +65,6 @@
       font-size: 1.2rem;
       color: #fff;
     }
-
     .progress-bar {
       position: absolute;
       top: 10px;
@@ -79,7 +73,6 @@
       height: 80%;
       background: linear-gradient(orange, darkorange);
     }
-
     #dev-footer {
       margin-top: 30px;
     }
@@ -101,7 +94,7 @@
   <!-- HOME -->
   <div id="home" class="screen active">
     <h1>Developed by Abdul Salam Thahim</h1>
-    <h2>Foundation Public School, Karachi</h2>
+    <h2>Foundation Public School, DHA Karachi</h2>
     <img src="assets/abdul-salam.jpg" alt="Abdul Salam Thahim" class="profile"/>
     <button onclick="startGame()">Start</button>
   </div>
@@ -129,27 +122,34 @@
   </div>
 
   <script>
-    // ─── Embed your 50 Karachi questions here ─────────────────────
+    // ─── All 50 Karachi questions embedded here ─────────────────────────────
     const allQuestions = [
-      { question: "What is the tallest building in Karachi?", sindhi: "ڪراچيءَ ۾ سڀ کان اوچو عمارت ڪهڙو آهي؟", answers: [
+      {
+        question: "What is the tallest building in Karachi?",
+        sindhi: "ڪراچيءَ ۾ سڀ کان اوچو عمارت ڪهڙو آهي؟",
+        answers: [
           { text: "Bahria Icon Tower", correct: true },
-          { text: "MCB Tower",      correct: false },
-          { text: "Habib Bank Plaza",correct: false },
-          { text: "Dolmen Tower",    correct: false }
-      ]},
-      { question: "Which beach is located in Karachi?", sindhi: "ڪراچيءَ ۾ ڪهڙو سمنڊ آهي؟", answers: [
+          { text: "MCB Tower", correct: false },
+          { text: "Habib Bank Plaza", correct: false },
+          { text: "Dolmen Tower", correct: false }
+        ]
+      },
+      {
+        question: "Which beach is located in Karachi?",
+        sindhi: "ڪراچيءَ ۾ ڪهڙو سمنڊ آهي؟",
+        answers: [
           { text: "Clifton Beach", correct: true },
-          { text: "Hawke's Bay",  correct: false },
-          { text: "Seaview",      correct: false },
+          { text: "Hawke's Bay", correct: false },
+          { text: "Seaview", correct: false },
           { text: "All of the above", correct: false }
-      ]},
-      /* … add remaining 48 … */
+        ]
+      },
+      /* … add the remaining 48 questions here … */
     ];
 
     let questions = [], current = 0;
 
     function startGame() {
-      // take a fresh shuffle of the full 50 and grab first 15
       questions = shuffle(allQuestions).slice(0, 15);
       current = 0;
       swapScreen("home", "quiz");
@@ -158,37 +158,34 @@
 
     function showQuestion() {
       const q = questions[current];
-      document.getElementById("questionText").textContent   = q.question;
+      document.getElementById("questionText").textContent = q.question;
       document.getElementById("questionSindhi").textContent = q.sindhi;
-
       const grid = document.getElementById("answers");
       grid.innerHTML = "";
       shuffle(q.answers).forEach(a => {
         const btn = document.createElement("button");
         btn.textContent = a.text;
-        btn.onclick     = () => checkAnswer(a.correct);
+        btn.onclick = () => checkAnswer(a.correct);
         grid.appendChild(btn);
       });
-
       updateProgress();
     }
 
     function checkAnswer(isCorrect) {
       if (isCorrect) {
-        speak("Correct answer");
-        flashScreen();
-        setTimeout(() => {
+        speak("Correct answer", () => {
+          flashScreen();
           current++;
           if (current < questions.length) {
             showQuestion();
           } else {
-            speak("Congratulations! You’ve won!");
-            goHome();
+            speak("Congratulations! You’ve won!", goHome);
           }
-        }, 500);
+        });
       } else {
-        speak("Oh, your answer is not correct");
-        swapScreen("quiz", "gameOver");
+        speak("Oh, your answer is not correct", () => {
+          swapScreen("quiz", "gameOver");
+        });
       }
     }
 
@@ -196,7 +193,6 @@
       swapScreen("gameOver", "home");
     }
 
-    // utility to toggle screens
     function swapScreen(hideId, showId) {
       document.getElementById(hideId).classList.remove("active");
       document.getElementById(showId).classList.add("active");
@@ -212,9 +208,11 @@
       bar.style.height = ((current + 1) / 15 * 100) + "%";
     }
 
-    function speak(text) {
+    function speak(text, callback) {
       const msg = new SpeechSynthesisUtterance(text);
-      msg.lang = "en-PK";
+      msg.lang = "en-GB"; // better cross-browser support
+      msg.onend = () => callback && callback();
+      speechSynthesis.cancel();
       speechSynthesis.speak(msg);
     }
 
