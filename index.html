@@ -201,4 +201,34 @@
       showPopup("Sahi Jawab!", true, false);
       score++;
       setTimeout(() => {
-       
+        popup.style.display = 'none';
+        currentQ++;
+        showQuestion();
+      }, 1500);
+    } else {
+      wrongSound.play();
+      showPopup("Ghalat Jawab", false, false, true);
+    }
+  }
+
+  function showPopup(message, isCorrect, isGameOver, showRestart = false) {
+    popup.innerHTML = `<div>${message}</div>`;
+    if(showRestart || isGameOver) {
+      popup.innerHTML += `<button id="restart-btn">Restart Game</button>`;
+      document.getElementById('restart-btn').onclick = () => {
+        popup.style.display = 'none';
+        startGame();
+      }
+    }
+    popup.style.display = 'block';
+    if(isCorrect || isGameOver) {
+      // keep popup for 1.5s or until restart clicked for game over
+    } else {
+      // For wrong answer popup with restart button, keep until clicked
+    }
+  }
+
+  startBtn.onclick = startGame;
+</script>
+</body>
+</html>
