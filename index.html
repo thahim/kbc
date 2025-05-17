@@ -7,7 +7,7 @@
 <style>
   body {
     margin: 0; background-color: #0b1c2c; color: white; font-family: Arial, sans-serif;
-    text-align: center;
+    text-align: center; overflow-x: hidden;
   }
   header, footer {
     background: #111; padding: 10px; display: flex; flex-direction: column;
@@ -30,11 +30,12 @@
     background-color: orange; border: none; border-radius: 10px; cursor: pointer; color: black;
   }
   #question-screen {
-    display: none; padding: 20px;
+    display: none; padding: 20px; position: relative;
   }
   .question-box {
     background: black; border: 4px solid orange;
     padding: 20px; border-radius: 10px; margin-bottom: 20px;
+    min-height: 100px;
   }
   #answers {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -49,14 +50,34 @@
     border: 3px solid orange; padding: 10px;
     border-radius: 10px; background: #1f2e3a;
     cursor: pointer; max-width: 200px; width: 100%;
+    user-select: none;
   }
   .answer-box:hover {
     background-color: #ffa500; color: black;
   }
   #progress {
-    width: 10px; position: fixed; right: 0; bottom: 0;
-    background-color: orange; transition: height 0.5s ease;
-    height: 0;
+    width: 50px; position: fixed; right: 0; bottom: 0; top: 0;
+    background-color: #111;
+    display: flex; flex-direction: column-reverse;
+    align-items: center; justify-content: center;
+    padding: 10px 0;
+    box-sizing: border-box;
+  }
+  .prog-number {
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+    margin: 2px 0;
+    width: 35px;
+    height: 25px;
+    line-height: 25px;
+    border-radius: 5px;
+    user-select: none;
+    cursor: default;
+  }
+  .prog-number.active {
+    background-color: orange;
+    color: black;
   }
 </style>
 </head>
@@ -87,17 +108,159 @@
 </footer>
 
 <script>
-  const originalQuestions = Array.from({ length: 25 }, (_, i) => ({
-    question: `What is Karachi famous for #${i + 1}?`,
-    translation: `ڪراچي ڇو مشهور آهي #${i + 1}؟`,
-    answers: [
-      `Beaches / سمنڊ ڪنارا`,
-      `Mountains / جبل`,
-      `Forests / ٻيل`,
-      `Deserts / ريگستان`
-    ],
-    correct: `Beaches / سمنڊ ڪنارا`
-  }));
+  // 25 unique Karachi-related questions with English + Sindhi translations & answers
+  const originalQuestions = [
+    {
+      question: "What is the nickname of Karachi?",
+      translation: "ڪراچي جو عرفيت ڇا آهي؟",
+      answers: ["City of Lights", "City of Gardens", "City of Rivers", "City of Mountains"],
+      correct: "City of Lights"
+    },
+    {
+      question: "Which sea borders Karachi?",
+      translation: "ڪراچي کي ڪهڙي سمنڊ جي ڪناري آهي؟",
+      answers: ["Arabian Sea", "Red Sea", "Baltic Sea", "Mediterranean Sea"],
+      correct: "Arabian Sea"
+    },
+    {
+      question: "Karachi is the capital of which province?",
+      translation: "ڪراچي ڪهڙي صوبي جي راڄڌاني آهي؟",
+      answers: ["Sindh", "Punjab", "Balochistan", "Khyber Pakhtunkhwa"],
+      correct: "Sindh"
+    },
+    {
+      question: "What is the major airport in Karachi?",
+      translation: "ڪراچي جو اهم هوائي اڏو ڪهڙو آهي؟",
+      answers: ["Jinnah International Airport", "Heathrow Airport", "Dubai Airport", "Lahore Airport"],
+      correct: "Jinnah International Airport"
+    },
+    {
+      question: "Which famous market is in Karachi?",
+      translation: "ڪراچي جو مشهور بازار ڪهڙو آهي؟",
+      answers: ["Empress Market", "Anarkali Bazaar", "Gulshan Market", "Liberty Market"],
+      correct: "Empress Market"
+    },
+    {
+      question: "Karachi is located on which coast?",
+      translation: "ڪراچي ڪهڙي ڪناري تي واقع آهي؟",
+      answers: ["Southern Coast", "Northern Coast", "Eastern Coast", "Western Coast"],
+      correct: "Southern Coast"
+    },
+    {
+      question: "What is Karachi's population approximately?",
+      translation: "ڪراچي جي آبادي لڳ ڀڳ ڪيتري آهي؟",
+      answers: ["15 million", "5 million", "25 million", "10 million"],
+      correct: "15 million"
+    },
+    {
+      question: "Which river flows near Karachi?",
+      translation: "ڪراچي ويجهو ڪهڙو درياهه وهندو آهي؟",
+      answers: ["Malir River", "Indus River", "Chenab River", "Jhelum River"],
+      correct: "Malir River"
+    },
+    {
+      question: "Karachi is known for which economic activity?",
+      translation: "ڪراچي ڪهڙي معاشي سرگرمي لاءِ مشهور آهي؟",
+      answers: ["Port Trade", "Mining", "Agriculture", "Tourism"],
+      correct: "Port Trade"
+    },
+    {
+      question: "Which sports are most popular in Karachi?",
+      translation: "ڪراچي ۾ سڀ کان وڌيڪ مشهور رانديون ڪهڙيون آهن؟",
+      answers: ["Cricket", "Football", "Hockey", "Tennis"],
+      correct: "Cricket"
+    },
+    {
+      question: "Which historic monument is in Karachi?",
+      translation: "ڪراچي ۾ ڪهڙو تاريخي ماڳ آهي؟",
+      answers: ["Mazar-e-Quaid", "Badshahi Mosque", "Lahore Fort", "Shalimar Gardens"],
+      correct: "Mazar-e-Quaid"
+    },
+    {
+      question: "What is the official language of Karachi?",
+      translation: "ڪراچي جي سرڪاري ٻولي ڇا آهي؟",
+      answers: ["Urdu", "Sindhi", "Punjabi", "Balochi"],
+      correct: "Urdu"
+    },
+    {
+      question: "Karachi is famous for which food?",
+      translation: "ڪراچي ڪهڙي کاڌي لاءِ مشهور آهي؟",
+      answers: ["Biryani", "Pasta", "Pizza", "Sushi"],
+      correct: "Biryani"
+    },
+    {
+      question: "Which famous beach is in Karachi?",
+      translation: "ڪراچي ۾ مشهور سامونڊي ڪنارو ڪهڙو آهي؟",
+      answers: ["Clifton Beach", "Miami Beach", "Santa Monica", "Bondi Beach"],
+      correct: "Clifton Beach"
+    },
+    {
+      question: "Karachi is the financial capital of which country?",
+      translation: "ڪراچي ڪهڙي ملڪ جي مالي راڄڌاني آهي؟",
+      answers: ["Pakistan", "India", "Bangladesh", "Nepal"],
+      correct: "Pakistan"
+    },
+    {
+      question: "Karachi’s famous zoo is called?",
+      translation: "ڪراچي جو مشهور چڙيا گهر ڪهڙو آهي؟",
+      answers: ["Karachi Zoo", "Lahore Zoo", "Islamabad Zoo", "Peshawar Zoo"],
+      correct: "Karachi Zoo"
+    },
+    {
+      question: "Which university is in Karachi?",
+      translation: "ڪراچي ۾ ڪهڙي يونيورسٽي آهي؟",
+      answers: ["University of Karachi", "Punjab University", "NUST", "Quaid-e-Azam University"],
+      correct: "University of Karachi"
+    },
+    {
+      question: "What kind of climate does Karachi have?",
+      translation: "ڪراچي جو موسم ڪهڙو آهي؟",
+      answers: ["Arid", "Tropical", "Temperate", "Cold"],
+      correct: "Arid"
+    },
+    {
+      question: "Karachi's main public transport is?",
+      translation: "ڪراچي جو اهم پبلڪ ٽرانسپورٽ ڇا آهي؟",
+      answers: ["Buses", "Trains", "Metro", "Trams"],
+      correct: "Buses"
+    },
+    {
+      question: "Which festival is widely celebrated in Karachi?",
+      translation: "ڪراچي ۾ ڪهڙو ميلو وڏي پيماني تي ملهايو ويندو آهي؟",
+      answers: ["Eid", "Christmas", "Diwali", "Holi"],
+      correct: "Eid"
+    },
+    {
+      question: "Karachi’s famous tower is?",
+      translation: "ڪراچي جو مشهور ٽاور ڪهڙو آهي؟",
+      answers: ["Habib Bank Tower", "CN Tower", "Burj Khalifa", "Eiffel Tower"],
+      correct: "Habib Bank Tower"
+    },
+    {
+      question: "Which major port is in Karachi?",
+      translation: "ڪراچي ۾ ڪهڙو اهم بندرگاهه آهي؟",
+      answers: ["Port of Karachi", "Port of Mumbai", "Port of Singapore", "Port of Rotterdam"],
+      correct: "Port of Karachi"
+    },
+    {
+      question: "Which of these is a famous Karachi shopping district?",
+      translation: "هيٺين مان ڪهڙو ڪراچي جو مشهور خريداري وارو علائقو آهي؟",
+      answers: ["Saddar", "Defence", "Gulshan-e-Iqbal", "Clifton"],
+      correct: "Saddar"
+    },
+    {
+      question: "Karachi’s nickname for its inhabitants is?",
+      translation: "ڪراچي وارن لاءِ عرفيت ڇا آهي؟",
+      answers: ["Karachiwala", "Lahori", "Peshawari", "Quetiani"],
+      correct: "Karachiwala"
+    },
+    {
+      question: "Which is a major highway in Karachi?",
+      translation: "ڪراچي ۾ ڪهڙو وڏو هاءِ وي آهي؟",
+      answers: ["Super Highway", "Motorway", "Ring Road", "National Highway"],
+      correct: "Super Highway"
+    }
+  ];
 
   let questions = [];
   let current = 0;
@@ -128,7 +291,8 @@
     }
     const q = questions[current];
     const questionEl = document.getElementById('question');
-    questionEl.innerHTML = `<h2>Q${current + 1}: ${q.question}</h2><p><em>${q.translation}</em></p>`;
+    // Show question text without question number
+    questionEl.innerHTML = `<h2>${q.question}</h2><p><em>${q.translation}</em></p>`;
 
     const answersEl = document.getElementById('answers');
     answersEl.innerHTML = '';
@@ -136,56 +300,52 @@
       const div = document.createElement('div');
       div.className = 'answer-box';
       div.textContent = ans;
-      div.onclick = () => checkAnswer(ans, q.correct);
+      div.onclick = () => answerSelected(ans);
       answersEl.appendChild(div);
     });
 
-    speakText(`${q.question}. Options are: ${q.answers.map(a => a.split(' / ')[0]).join(', ')}.`);
     updateProgress();
   }
 
-  function checkAnswer(selected, correct) {
-    speechSynthesis.cancel();
-    if (selected === correct) {
-      speakText("Correct answer!", () => {
-        current++;
-        showQuestion();
-      });
+  function answerSelected(selected) {
+    const q = questions[current];
+    if (selected === q.correct) {
+      alert("Correct!");
     } else {
-      speakText("Oh! Jawab ghalat hai.", () => {
-        setTimeout(() => {
-          alert("Wrong answer! Restarting game.");
-          speechSynthesis.cancel();
-          location.reload();
-        }, 1000);
-      });
+      alert(`Wrong! Correct answer was: ${q.correct}`);
     }
+    current++;
+    showQuestion();
   }
 
   function updateProgress() {
-    // Progress bar height grows from bottom to top
-    const percent = ((current) / questions.length) * 100;
-    document.getElementById('progress').style.height = percent + "vh";
-  }
+    const progressEl = document.getElementById('progress');
+    progressEl.innerHTML = '';
 
-  function speakText(text, onEndCallback) {
-    if (!window.speechSynthesis) {
-      if(onEndCallback) onEndCallback();
-      return;
+    for(let i=questions.length-1; i >= 0; i--) {
+      const div = document.createElement('div');
+      div.className = 'prog-number';
+      if (i === current) div.classList.add('active');
+      div.textContent = i + 1;
+      progressEl.appendChild(div);
     }
-    speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US'; // English voice
-    utterance.onend = onEndCallback || null;
-    speechSynthesis.speak(utterance);
   }
 
   document.getElementById('start-btn').addEventListener('click', startGame);
 
-  // Cancel TTS if user leaves page or refreshes
-  window.addEventListener('beforeunload', () => {
-    speechSynthesis.cancel();
-  });
+  // Initialize progress bar with numbers but hidden until start
+  function initProgress() {
+    const progressEl = document.getElementById('progress');
+    progressEl.innerHTML = '';
+    for(let i=originalQuestions.length-1; i >= 0; i--) {
+      const div = document.createElement('div');
+      div.className = 'prog-number';
+      div.textContent = i + 1;
+      progressEl.appendChild(div);
+    }
+  }
+  initProgress();
+
 </script>
 </body>
 </html>
