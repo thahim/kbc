@@ -1,27 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="description" content="Kair Thindo Crorepati - A quiz game about Karachi">
-  <meta name="keywords" content="Sindhi, Karachi Quiz, KBC Game, Abdul Salam Thahim">
-  <meta name="author" content="Abdul Salam Thahim">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Kair Thindo Crorepati - A Karachi quiz game in Sindhi Roman"/>
+  <meta name="author" content="Abdul Salam Thahim" />
   <title>Kair Thindo Crorepati?</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-  <div class="game-container">
-    <h1>Kair Thindo Crorepati?</h1>
-    <h3>Developed by Abdul Salam Thahim</h3>
+  <header class="header">
+    <div class="developer-info">
+      <img src="assets/developer.jpg" alt="Abdul Salam Thahim" />
+      <span>Developed by Abdul Salam Thahim</span>
+    </div>
+  </header>
+
+  <main class="game-area">
+    <h1 class="game-title">Kair Thindo Crorepati?</h1>
+
     <button id="startGameBtn">Start Game</button>
 
     <div id="questionContainer" class="hidden">
-      <div id="question">Question will appear here</div>
-      <div id="answers"></div>
-      <button id="nextBtn">Next</button>
+      <div id="question" class="question-box">Question will appear here</div>
+      <div id="answers" class="answers"></div>
+      <button id="nextBtn" class="hidden">Next</button>
     </div>
-  </div>
+  </main>
 
-  <script src="script.js"></script>
+  <footer class="footer">
+    <div class="developer-info">
+      <img src="assets/developer.jpg" alt="Abdul Salam Thahim" />
+      <span>Developed by Abdul Salam Thahim</span>
+    </div>
+  </footer>
+
+  <script>
+    // Load sounds
+    const startSound = new Audio('assets/sounds/start.mp3');
+    const correctSound = new Audio('assets/sounds/correct.mp3');
+    const wrongSound = new Audio('assets/sounds/wrong.mp3');
+    const nextSound = new Audio('assets/sounds/next.mp3');
+
+    const allQuestions = [
+      {
+        question: "Karachi ka sab se purana area kaunsa hai?",
+        answers: ["Lyari", "Defence", "Clifton", "Gulshan"],
+        correct: "Lyari"
+      },
+      {
+        question: "Karachi ki mashhoor market ka naam kya hai?",
+        answers: ["Empress Market", "City Mall", "Zainab Market", "Meena Bazaar"],
+        correct: "Empress Market"
+      },
+      {
+        question: "Karachi ka sab se bara stadium?",
+        answers: ["National Stadium", "Asghar Ali Shah", "KMC Ground", "Karachi Gymkhana"],
+        correct: "National Stadium"
+      },
+      {
+        question: "Karachi ka airport ka naam kya hai?",
+        answers: ["Jinnah International", "Karachi International", "Iqbal Airport", "Sindh Airbase"],
+        correct: "Jinnah International"
+      }
+      // Add more questions up to 5000
+    ];
+
+    let currentQuestions = [];
+    let currentIndex = 0;
+
+    const startBtn = document.getElementById("startGameBtn");
+    const questionContainer = document.getElementById("questionContainer");
+    const questionEl = document.getElementById("question");
+    const answersEl = document.getElementById("answers");
+    const nextBtn = document.getElementById("nextBtn");
+
+    startBtn.addEventListener("click", startGame);
+    nextBtn.addEventListener("click", showNextQuestion);
+
+    function startGame() {
+      startBtn.classList.add("hidden");
+      questionContainer.classList.remove("hidden");
+      startSound.play();
+      currentQuestions = getRandomQuestions(15);
+      currentIndex = 0;
+      showQuestion();
+    }
+
+    function getRandomQuestions(count) {
+      const shuffled = [...allQuestions].sort(() => 0.5 - Math.random());
+      return shuffled.slice(0, count);
+    }
+
+    function showQuestion() {
+      resetState();
+      const q = currentQuestions[currentIndex];
+      questionEl.textContent = q.question;
+
+      const shuffledAnswers = [...q.answers].sort(() => 0.5 - Math.random());
+      shuffledAnswers.forEach(answer => {
+        const btn = document.createElement("button");
+        btn.textContent = answer;
+        btn.addEventListener("click", () => selectAnswer(answer, q.correct));
+        answersEl.appendChild(btn);
+      });
+    }
+
+    function resetState() {
+      answersEl.innerHTML = "";
+      nextBtn.classList.add("hidden");
+    }
+
+    function selectAnswer(selected, correct) {
+      if (selected === correct) {
+        correctSound.play();
+        alert("Sahi jawab!");
+      } else {
+        wrongSound.play();
+        alert("Ghalat jawab!");
+      }
+      nextBtn.classList.remove("hidden");
+    }
+
+    function showNextQuestion() {
+      nextSound.play();
+      currentIndex++;
+      if (currentIndex < currentQuestions.length) {
+        showQuestion();
+      } else {
+        alert("Mubarak ho! Game complete.");
+        location.reload();
+      }
+    }
+  </script>
 </body>
 </html>
