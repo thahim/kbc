@@ -7,91 +7,42 @@
   <meta name="author" content="Abdul Salam Thahim" />
   <title>Kair Thindo Crorepati?</title>
 
-  <!-- INLINE CSS -->
   <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #0c1b30;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
+    /* --- Base & Layout --- */
+    body { margin:0; font-family:'Segoe UI',sans-serif; background:#0c1b30; color:#fff;
+           display:flex; flex-direction:column; min-height:100vh; }
+    .header, .footer { background:#061222; padding:10px 20px; display:flex;
+                       justify-content:center; align-items:center; }
+    .game-area { flex:1; padding:40px 20px; text-align:center; position:relative; }
+    .hidden { display:none; }
 
-    .header, .footer {
-      background-color: #061222;
-      padding: 10px 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+    /* --- Developer Info --- */
+    .developer-info { display:flex; align-items:center; gap:10px; }
+    .developer-info img { width:40px; height:40px; border-radius:50%; border:2px solid #4e9eff; }
+    .developer-info span { font-weight:bold; color:#4e9eff; }
 
-    .developer-info {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+    /* --- Title & Buttons --- */
+    .game-title { font-size:2.2rem; color:#4e9eff; margin-bottom:30px; }
+    button { background:#4e9eff; color:#fff; border:none; padding:14px 28px;
+             font-size:1rem; border-radius:10px; margin:10px; cursor:pointer;
+             box-shadow:0 0 10px #4e9eff88; transition:background .3s; }
+    button:hover { background:#3588cc; }
 
-    .developer-info img {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      border: 2px solid #4e9eff;
-    }
+    /* --- Question Box & Answers --- */
+    .question-box { background:#112b48; padding:20px; border-radius:10px;
+                    margin-bottom:20px; font-size:1.2rem; box-shadow:0 0 15px #4e9eff33; }
+    .answers button { display:block; width:80%; margin:10px auto; }
 
-    .developer-info span {
-      font-weight: bold;
-      color: #4e9eff;
+    /* --- Overlay for Wrong Answer --- */
+    .overlay {
+      position:absolute; top:0; left:0; width:100%; height:100%;
+      background:rgba(0,0,0,0.8); display:flex; flex-direction:column;
+      justify-content:center; align-items:center; color:#fff; font-size:1.5rem;
+      z-index:10; padding:20px; box-sizing:border-box;
     }
-
-    .game-area {
-      flex: 1;
-      padding: 40px 20px;
-      text-align: center;
-    }
-
-    .game-title {
-      font-size: 2.2rem;
-      color: #4e9eff;
-      margin-bottom: 30px;
-    }
-
-    button {
-      background-color: #4e9eff;
-      color: white;
-      border: none;
-      padding: 14px 28px;
-      font-size: 1rem;
-      border-radius: 10px;
-      margin: 10px;
-      cursor: pointer;
-      box-shadow: 0 0 10px #4e9eff88;
-      transition: background 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #3588cc;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    .question-box {
-      background: #112b48;
-      padding: 20px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      font-size: 1.2rem;
-      box-shadow: 0 0 15px #4e9eff33;
-    }
-
-    .answers button {
-      display: block;
-      width: 80%;
-      margin: 10px auto;
-    }
+    .overlay.hidden { display:none; }
+    .overlay h2 { margin-bottom:20px; color:#ff4e4e; }
+    .overlay button { padding:12px 24px; font-size:1rem; }
   </style>
 </head>
 <body>
@@ -104,13 +55,19 @@
 
   <main class="game-area">
     <h1 class="game-title">Kair Thindo Crorepati?</h1>
-
     <button id="startGameBtn">Start Game</button>
 
     <div id="questionContainer" class="hidden">
       <div id="question" class="question-box">Question will appear here</div>
+      <div id="translation" style="margin-bottom:20px; font-style:italic; color:#a0c1ff;"></div>
       <div id="answers" class="answers"></div>
       <button id="nextBtn" class="hidden">Next</button>
+    </div>
+
+    <!-- Wrong Answer Overlay -->
+    <div id="wrongOverlay" class="overlay hidden">
+      <h2>Ghalat Jawab</h2>
+      <button id="homeBtn">Go to Home</button>
     </div>
   </main>
 
@@ -121,33 +78,56 @@
     </div>
   </footer>
 
-  <!-- INLINE JS -->
   <script>
-    // Load sounds
+    // Sound assets
     const startSound   = new Audio('assets/sounds/start.mp3');
     const correctSound = new Audio('assets/sounds/correct.mp3');
     const wrongSound   = new Audio('assets/sounds/wrong.mp3');
     const nextSound    = new Audio('assets/sounds/next.mp3');
 
+    // Sample questions with Sindhi translations
     const allQuestions = [
-      { question: "Karachi ka sab se purana area kaunsa hai?", answers: ["Lyari", "Defence", "Clifton", "Gulshan"], correct: "Lyari" },
-      { question: "Karachi ki mashhoor market ka naam kya hai?", answers: ["Empress Market", "City Mall", "Zainab Market", "Meena Bazaar"], correct: "Empress Market" },
-      { question: "Karachi ka sab se bara stadium?", answers: ["National Stadium", "Asghar Ali Shah", "KMC Ground", "Karachi Gymkhana"], correct: "National Stadium" },
-      { question: "Karachi ka airport ka naam kya hai?", answers: ["Jinnah International", "Karachi International", "Iqbal Airport", "Sindh Airbase"], correct: "Jinnah International" }
-      // ...extend up to 5000 questions
+      {
+        question: "Karachi ka sab se purana area kaunsa hai?",
+        sindhiQ: "ڪراچي جو سڀ کان پراڻو علائقو ڪهڙو آهي؟",
+        answers: [
+          { text: "Lyari", sindhi: "لياري" },
+          { text: "Defence", sindhi: "ڊفينس" },
+          { text: "Clifton", sindhi: "ڪلفٽن" },
+          { text: "Gulshan", sindhi: "گلشن" }
+        ],
+        correct: "Lyari"
+      },
+      {
+        question: "Karachi ki mashhoor market ka naam kya hai?",
+        sindhiQ: "ڪراچي جي مشهور مارڪيٽ جو نالو ڇا آهي؟",
+        answers: [
+          { text: "Empress Market", sindhi: "ايمپريس مارڪيٽ" },
+          { text: "City Mall", sindhi: "سٽي مال" },
+          { text: "Zainab Market", sindhi: "زينب مارڪيٽ" },
+          { text: "Meena Bazaar", sindhi: "مينا بازار" }
+        ],
+        correct: "Empress Market"
+      },
+      // … extend up to 5000 entries
     ];
 
     let currentQuestions = [];
     let currentIndex     = 0;
 
+    // Elements
     const startBtn         = document.getElementById("startGameBtn");
     const questionContainer = document.getElementById("questionContainer");
     const questionEl       = document.getElementById("question");
+    const translationEl    = document.getElementById("translation");
     const answersEl        = document.getElementById("answers");
     const nextBtn          = document.getElementById("nextBtn");
+    const wrongOverlay     = document.getElementById("wrongOverlay");
+    const homeBtn          = document.getElementById("homeBtn");
 
     startBtn.addEventListener("click", startGame);
     nextBtn.addEventListener("click", showNextQuestion);
+    homeBtn.addEventListener("click", () => location.reload());
 
     function startGame() {
       startBtn.classList.add("hidden");
@@ -159,20 +139,26 @@
     }
 
     function getRandomQuestions(count) {
-      const shuffled = [...allQuestions].sort(() => 0.5 - Math.random());
-      return shuffled.slice(0, count);
+      return [...allQuestions]
+        .sort(() => 0.5 - Math.random())
+        .slice(0, count);
     }
 
     function showQuestion() {
       resetState();
       const q = currentQuestions[currentIndex];
-      questionEl.textContent = q.question;
+      questionEl.textContent     = q.question;
+      translationEl.textContent  = q.sindhiQ;
 
-      const shuffledAnswers = [...q.answers].sort(() => 0.5 - Math.random());
-      shuffledAnswers.forEach(answer => {
+      // render answers with translations
+      const shuffled = [...q.answers].sort(() => 0.5 - Math.random());
+      shuffled.forEach(ans => {
         const btn = document.createElement("button");
-        btn.textContent = answer;
-        btn.addEventListener("click", () => selectAnswer(answer, q.correct));
+        btn.innerHTML = `
+          ${ans.text}<br>
+          <small style="font-style:italic; color:#a0c1ff;">${ans.sindhi}</small>
+        `;
+        btn.addEventListener("click", () => selectAnswer(ans.text, q.correct));
         answersEl.appendChild(btn);
       });
     }
@@ -180,17 +166,18 @@
     function resetState() {
       answersEl.innerHTML = "";
       nextBtn.classList.add("hidden");
+      wrongOverlay.classList.add("hidden");
     }
 
     function selectAnswer(selected, correct) {
       if (selected === correct) {
         correctSound.play();
-        alert("Sahi jawab!");
+        nextBtn.classList.remove("hidden");
       } else {
         wrongSound.play();
-        alert("Ghalat jawab!");
+        // show overlay
+        wrongOverlay.classList.remove("hidden");
       }
-      nextBtn.classList.remove("hidden");
     }
 
     function showNextQuestion() {
@@ -199,7 +186,7 @@
       if (currentIndex < currentQuestions.length) {
         showQuestion();
       } else {
-        alert("Mubarak ho! Game complete.");
+        alert("Mubarak ho! Game complete."); // or make a final screen similarly
         location.reload();
       }
     }
