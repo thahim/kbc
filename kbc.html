@@ -7,166 +7,306 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
 
+  /* Background with subtle radial gradient and animated rings */
   body {
     margin: 0;
-    background: radial-gradient(circle at center, #001122 0%, #000000 80%);
+    height: 100vh;
+    background: radial-gradient(circle at center, #01111f 0%, #000814 90%);
     font-family: 'Orbitron', sans-serif;
     color: #00ffcc;
     overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
   }
 
+  /* Animated rotating rings behind game container */
+  #rings {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .ring {
+    border: 2px solid #00ffcc33;
+    border-radius: 50%;
+    position: absolute;
+    animation-timing-function: linear;
+    box-shadow: 0 0 15px #00ffcc99;
+  }
+
+  .ring1 {
+    width: 400px;
+    height: 400px;
+    top: -200px;
+    left: -200px;
+    animation: spin 60s linear infinite;
+  }
+  .ring2 {
+    width: 300px;
+    height: 300px;
+    top: -150px;
+    left: -150px;
+    animation: spinReverse 80s linear infinite;
+    border-color: #00ffcc44;
+    box-shadow: 0 0 30px #00ffccbb;
+  }
+  .ring3 {
+    width: 200px;
+    height: 200px;
+    top: -100px;
+    left: -100px;
+    animation: spin 40s linear infinite;
+    border-color: #00ffcc66;
+    box-shadow: 0 0 40px #00ffccdd;
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg);}
+    to { transform: rotate(360deg);}
+  }
+  @keyframes spinReverse {
+    from { transform: rotate(360deg);}
+    to { transform: rotate(0deg);}
+  }
+
+  /* Header with glow */
   header {
-    text-align: center;
-    padding: 1rem;
-    font-size: 2.5rem;
-    letter-spacing: 0.1em;
+    margin-top: 20px;
+    font-size: 3rem;
+    letter-spacing: 0.3em;
     color: #00ffff;
-    text-shadow: 0 0 15px #00ffff;
+    text-shadow:
+      0 0 10px #00ffff,
+      0 0 20px #00ffff,
+      0 0 40px #00ffff,
+      0 0 80px #00ffff;
+    user-select: none;
   }
 
+  /* Game container with glowing border and background */
   #game-container {
-    max-width: 700px;
-    margin: 2rem auto;
-    background: #002233cc;
-    border-radius: 15px;
-    padding: 1.5rem;
-    box-shadow: 0 0 30px #00ffff;
     position: relative;
+    margin-top: 40px;
+    max-width: 700px;
+    background: radial-gradient(circle at center, #012223 20%, #00110f 90%);
+    border-radius: 20px;
+    border: 3px solid #00ffcc;
+    box-shadow:
+      0 0 20px #00ffcc,
+      inset 0 0 15px #00ffcc;
+    padding: 2rem 2.5rem 3rem 2.5rem;
+    z-index: 10;
   }
 
+  /* Contestant photo circular with neon glow */
+  #photo-contestant {
+    display: block;
+    margin: 0 auto 1.5rem auto;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 4px solid #00ffcc;
+    box-shadow: 0 0 20px #00ffcc;
+    object-fit: cover;
+  }
+
+  /* Question text style */
   #question {
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    line-height: 1.3;
+    color: #00ffcc;
+    text-shadow:
+      0 0 7px #00ffcc,
+      0 0 20px #00ffcc,
+      0 0 40px #00ffcc;
+    opacity: 0;
+    animation: fadeInSlow 2s forwards;
   }
 
+  /* Answers grid */
   .answers {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+    gap: 1.3rem;
+    opacity: 0;
+    animation: fadeInSlow 2s 1.5s forwards;
   }
 
+  /* Answer buttons */
   .answer-btn {
-    background: #003344;
-    border: 2px solid #00ffff;
-    border-radius: 10px;
-    color: #00ffff;
-    font-size: 1.2rem;
-    padding: 1rem;
+    background: linear-gradient(145deg, #003d33, #00594d);
+    border: 2px solid #00ffcc;
+    border-radius: 12px;
+    color: #00ffcc;
+    font-size: 1.3rem;
+    font-weight: 600;
+    padding: 1rem 1.3rem;
     cursor: pointer;
-    transition: background 0.3s, color 0.3s;
-    box-shadow: 0 0 8px #00ffff;
+    box-shadow:
+      0 0 10px #00ffcc,
+      inset 0 0 15px #00ffcc;
+    transition:
+      background 0.3s ease,
+      color 0.3s ease,
+      box-shadow 0.3s ease;
+    user-select: none;
   }
 
-  .answer-btn:hover {
-    background: #00ffff;
-    color: #003344;
+  .answer-btn:hover:not(:disabled) {
+    background: linear-gradient(145deg, #00ffcc, #00ccaa);
+    color: #001f1a;
+    box-shadow:
+      0 0 20px #00ffcc,
+      inset 0 0 20px #00ffcc;
   }
 
+  .answer-btn:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+
+  /* Correct and wrong answer styles */
   .answer-btn.correct {
     background: #00cc66 !important;
     color: #fff !important;
-    box-shadow: 0 0 20px #00cc66 !important;
+    box-shadow: 0 0 25px #00cc66 !important;
+    border-color: #00cc66 !important;
   }
 
   .answer-btn.wrong {
     background: #cc3300 !important;
     color: #fff !important;
-    box-shadow: 0 0 20px #cc3300 !important;
+    box-shadow: 0 0 25px #cc3300 !important;
+    border-color: #cc3300 !important;
   }
 
+  /* Scoreboard text */
   #scoreboard {
-    margin-top: 1rem;
-    font-size: 1.2rem;
+    margin-top: 2rem;
+    font-size: 1.4rem;
     text-align: center;
+    text-shadow: 0 0 10px #00ffcc;
+    font-weight: 700;
   }
 
+  /* Lifeline buttons container */
   #lifelines {
-    margin-top: 1.5rem;
+    margin-top: 2rem;
     text-align: center;
   }
 
+  /* Lifeline buttons */
   .lifeline-btn {
-    border: 2px solid #00ffff;
+    border: 2px solid #00ffcc;
     background: transparent;
-    color: #00ffff;
-    padding: 0.5rem 1rem;
-    margin: 0 0.5rem;
+    color: #00ffcc;
+    padding: 0.6rem 1.5rem;
+    margin: 0 0.6rem;
     cursor: pointer;
-    border-radius: 8px;
-    font-weight: bold;
-    box-shadow: 0 0 10px #00ffff;
-    transition: background 0.3s, color 0.3s;
+    border-radius: 10px;
+    font-weight: 700;
+    box-shadow:
+      0 0 15px #00ffcc;
+    transition:
+      background 0.4s ease,
+      color 0.4s ease,
+      box-shadow 0.4s ease;
+    user-select: none;
+  }
+
+  .lifeline-btn:hover:not(:disabled) {
+    background: #00ffcc;
+    color: #001f1a;
+    box-shadow:
+      0 0 30px #00ffcc;
   }
 
   .lifeline-btn:disabled {
-    border-color: #444;
-    color: #444;
+    border-color: #004d40;
+    color: #004d40;
     cursor: default;
     box-shadow: none;
   }
 
+  /* Result popup styling */
   #result-popup {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) scale(0);
-    background: #001122dd;
-    padding: 2rem 3rem;
-    border-radius: 20px;
+    background: #001a1acc;
+    padding: 2.5rem 3rem;
+    border-radius: 25px;
     color: #00ffcc;
-    font-size: 2rem;
+    font-size: 2.5rem;
     text-align: center;
-    box-shadow: 0 0 40px #00ffff;
-    transition: transform 0.4s ease-out;
-    z-index: 1000;
+    box-shadow:
+      0 0 50px #00ffcc;
+    transition: transform 0.7s ease-out;
+    z-index: 2000;
+    user-select: none;
   }
 
   #result-popup.show {
     transform: translate(-50%, -50%) scale(1);
   }
 
-  #photo-contestant {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    margin: 0 auto 1rem;
-    border: 3px solid #00ffff;
-    box-shadow: 0 0 15px #00ffff;
-    object-fit: cover;
-  }
-
-  /* Animate question fade in */
-  .fade-in {
-    animation: fadeIn 1s ease forwards;
-    opacity: 0;
-  }
-
-  @keyframes fadeIn {
-    to { opacity: 1; }
+  /* Fade in animation */
+  @keyframes fadeInSlow {
+    to {
+      opacity: 1;
+    }
   }
 </style>
 </head>
 <body>
 
-<header>Who Wants to Be a Millionaire?</header>
-
-<div id="game-container">
-  <img id="photo-contestant" src="https://i.imgur.com/7v5ASc8.jpg" alt="Contestant Photo" />
-  <div id="question" class="fade-in">Loading question...</div>
-  <div class="answers fade-in" id="answers"></div>
-
-  <div id="lifelines">
-    <button class="lifeline-btn" id="lifeline-5050">50-50</button>
-    <button class="lifeline-btn" id="lifeline-phone">Phone a Friend</button>
-    <button class="lifeline-btn" id="lifeline-audience">Ask the Audience</button>
-  </div>
-
-  <div id="scoreboard">Question: 1 | Prize: $100</div>
+<!-- Background rings for the glowing effect -->
+<div id="rings" aria-hidden="true">
+  <div class="ring ring1"></div>
+  <div class="ring ring2"></div>
+  <div class="ring ring3"></div>
 </div>
 
-<div id="result-popup"></div>
+<header>WHO WANTS TO BE A MILLIONAIRE?</header>
+
+<div id="game-container" role="main" aria-label="Millionaire Quiz Game">
+  <img id="photo-contestant" src="https://raw.githubusercontent.com/thahim/tribe/main/son.jpg" alt="Contestant Photo" />
+  <div id="question" aria-live="polite" aria-atomic="true">Loading question...</div>
+  <div class="answers" id="answers" role="list"></div>
+
+  <div id="lifelines" role="region" aria-label="Lifelines">
+    <button class="lifeline-btn" id="lifeline-5050" aria-pressed="false" aria-label="Use 50-50 lifeline">50-50</button>
+    <button class="lifeline-btn" id="lifeline-phone" aria-pressed="false" aria-label="Use Phone a Friend lifeline">Phone a Friend</button>
+    <button class="lifeline-btn" id="lifeline-audience" aria-pressed="false" aria-label="Use Ask the Audience lifeline">Ask the Audience</button>
+  </div>
+
+  <div id="scoreboard" aria-live="polite" aria-atomic="true">Question: 1 | Prize: $100</div>
+</div>
+
+<div id="result-popup" role="alert"></div>
 
 <script>
+  // Sound effect URLs (free alternatives, replace with real ones if you want)
+  const sounds = {
+    questionIntro: new Audio('https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg'),
+    correct: new Audio('https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg'),
+    wrong: new Audio('https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg'),
+    lifeline: new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg')
+  };
+
+  // Preload sounds
+  for (const key in sounds) {
+    sounds[key].load();
+  }
+
   const questions = [
     {
       question: "What is the capital of France?",
@@ -212,27 +352,42 @@
   const scoreboardEl = document.getElementById('scoreboard');
   const resultPopup = document.getElementById('result-popup');
 
+  function playSound(sound) {
+    if (sounds[sound]) {
+      sounds[sound].currentTime = 0;
+      sounds[sound].play();
+    }
+  }
+
   function showQuestion() {
     const q = questions[currentQuestion];
-    questionEl.textContent = q.question;
-    answersEl.innerHTML = '';
-    questionEl.classList.remove('fade-in');
-    answersEl.classList.remove('fade-in');
-    // trigger reflow to restart animation
-    void questionEl.offsetWidth;
-    void answersEl.offsetWidth;
-    questionEl.classList.add('fade-in');
-    answersEl.classList.add('fade-in');
+    questionEl.style.opacity = '0';
+    answersEl.style.opacity = '0';
 
-    q.answers.forEach((answer, i) => {
-      const btn = document.createElement('button');
-      btn.className = 'answer-btn';
-      btn.textContent = answer;
-      btn.onclick = () => selectAnswer(i);
-      answersEl.appendChild(btn);
-    });
+    setTimeout(() => {
+      questionEl.textContent = q.question;
+      answersEl.innerHTML = '';
 
-    scoreboardEl.textContent = `Question: ${currentQuestion + 1} | Prize: ${q.prize}`;
+      q.answers.forEach((answer, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'answer-btn';
+        btn.textContent = answer;
+        btn.setAttribute('role', 'listitem');
+        btn.onclick = () => selectAnswer(i);
+        answersEl.appendChild(btn);
+      });
+
+      scoreboardEl.textContent = `Question: ${currentQuestion + 1} | Prize: ${q.prize}`;
+
+      // Fade in slowly
+      questionEl.style.animation = 'fadeInSlow 2s forwards';
+      answersEl.style.animation = 'fadeInSlow 2s 1.5s forwards';
+
+      // Play question intro sound
+      playSound('questionIntro');
+
+      enableAnswers();
+    }, 600);
   }
 
   function selectAnswer(i) {
@@ -243,6 +398,7 @@
 
     if (i === correctIndex) {
       buttons[i].classList.add('correct');
+      playSound('correct');
       setTimeout(() => {
         currentQuestion++;
         if (currentQuestion < questions.length) {
@@ -250,13 +406,14 @@
         } else {
           showResult("Congratulations! You won the Million!");
         }
-      }, 1500);
+      }, 2500);
     } else {
       buttons[i].classList.add('wrong');
       buttons[correctIndex].classList.add('correct');
+      playSound('wrong');
       setTimeout(() => {
         showResult("Game Over! You lost!");
-      }, 2000);
+      }, 3000);
     }
   }
 
@@ -275,7 +432,7 @@
     resultPopup.classList.add('show');
     setTimeout(() => {
       location.reload();
-    }, 5000);
+    }, 6000);
   }
 
   // Lifelines
@@ -283,6 +440,7 @@
     if (usedLifelines['5050']) return;
     usedLifelines['5050'] = true;
     this.disabled = true;
+    playSound('lifeline');
 
     const correctIndex = questions[currentQuestion].correct;
     const buttons = Array.from(answersEl.querySelectorAll('button'));
@@ -301,6 +459,7 @@
     if (usedLifelines.phone) return;
     usedLifelines.phone = true;
     this.disabled = true;
+    playSound('lifeline');
 
     const correctAnswer = questions[currentQuestion].answers[questions[currentQuestion].correct];
     alert(`Phone a Friend suggests the answer might be: "${correctAnswer}"`);
@@ -310,6 +469,7 @@
     if (usedLifelines.audience) return;
     usedLifelines.audience = true;
     this.disabled = true;
+    playSound('lifeline');
 
     const percentages = [10, 10, 10, 10];
     const correctIndex = questions[currentQuestion].correct;
